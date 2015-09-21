@@ -54,9 +54,8 @@ FPGA resources.
    bugs so as to avoid wasting computational effort. Any bug must be found
    as early as possible.
 2. **Contribute Hardware**: We are computing using the idle time of the
-   most powerful FPGA devices at the VLSI-EDA Chair of TU Dresden. While we
-   have, indeed, have powerful devices available, their number is fairly
-   small:
+   most powerful FPGA devices at the VLSI-EDA Chair of TU Dresden. While we,
+   indeed, have powerful devices available, their number is fairly small:
 
    Count | Board | Family | Device | Solvers | Clock | SE
    ------|-------|--------|--------|---------|-------|-----
@@ -64,7 +63,7 @@ FPGA resources.
    1x    | KC705 | Xilinx Kintex-7 | XC7K325T-2  | 144 | 271.4 MHz | 390
    1x    | ML605 | Xilinx Virtex-6 | XC6VLX240T-1| 125 | 200.0 MHz | 250
 
-   **SE** (Solver Equivalent) - The preformance of one solver slice running at 100 MHz.
+   **SE** (Solver Equivalent) - The performance of one solver slice running at 100 MHz.
 
    If you are willing to **contribute compute time** on your own hardware or
    even to **donate devices**, please contact thomas.preusser@tu-dresden.de.
