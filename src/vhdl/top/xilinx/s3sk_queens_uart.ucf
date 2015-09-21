@@ -1,0 +1,36 @@
+CONFIG PART = XC3S1000-FT256-4;
+
+NET "clkx" TNM_NET = "clkx";
+TIMESPEC "TS_clk" = PERIOD "clkx" 20 ns HIGH 50 %;
+
+NET "clkx" LOC = "T9"  | IOSTANDARD = LVCMOS33 ;
+NET "rstx" LOC = "L14" | IOSTANDARD = LVCMOS33 | TIG ;
+
+NET "rx"  LOC = "T13" | IOSTANDARD = LVCMOS33 | TIG ;
+NET "tx"  LOC = "R13" | IOSTANDARD = LVCMOS33 | TIG ;
+
+NET "leds<0>"  LOC = "K12" | IOSTANDARD = LVCMOS33 ;
+NET "leds<1>"  LOC = "P14" | IOSTANDARD = LVCMOS33 ;
+NET "leds<2>"  LOC = "L12" | IOSTANDARD = LVCMOS33 ;
+NET "leds<3>"  LOC = "N14" | IOSTANDARD = LVCMOS33 ;
+NET "leds<4>"  LOC = "P13" | IOSTANDARD = LVCMOS33 ;
+NET "leds<5>"  LOC = "N12" | IOSTANDARD = LVCMOS33 ;
+NET "leds<6>"  LOC = "P12" | IOSTANDARD = LVCMOS33 ;
+NET "leds<7>"  LOC = "P11" | IOSTANDARD = LVCMOS33 ;
+NET "leds<*>"  TIG ;
+
+NET "seg7_an<0>"  LOC = "D14" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_an<1>"  LOC = "G14" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_an<2>"  LOC = "F14" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_an<3>"  LOC = "E13" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_an<*>"  TIG ;
+
+NET "seg7_sg<0>"  LOC = "N16" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_sg<1>"  LOC = "F13" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_sg<2>"  LOC = "R16" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_sg<3>"  LOC = "P15" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_sg<4>"  LOC = "N15" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_sg<5>"  LOC = "G13" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_sg<6>"  LOC = "E14" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_sg<7>"  LOC = "P16" | IOSTANDARD = LVCMOS33 ;
+NET "seg7_sg<*>"  TIG ;
