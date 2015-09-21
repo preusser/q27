@@ -64,7 +64,7 @@ FPGA resources.
    1x    | KC705 | Xilinx Kintex-7 | XC7K325T-2  | 144 | 271.4 MHz | 390
    1x    | ML605 | Xilinx Virtex-6 | XC6VLX240T-1| 125 | 200.0 MHz | 250
 
-   **SE** (Solver Equivalent) - One solver slice running at 100 MHz.
+   **SE** (Solver Equivalent) - The preformance of one solver slice running at 100 MHz.
 
    If you are willing to **contribute compute time** on your own hardware or
    even to **donate devices**, please contact thomas.preusser@tu-dresden.de.
