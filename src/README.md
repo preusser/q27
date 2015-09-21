@@ -29,6 +29,16 @@ which are implemented in different languages:
   - A standalone *LocalMain* to serve local FPGAs from a local database
     for testing purposes.
 
+# Building
+
+The assumed build process is solely based on `make`. The `Makefile` recipes
+are kept simplistic so that you can easily adapt them to the work flow of
+your choice. The provided flow assumes:
+
+1. a C++ compiler supporting C++11 and uses g++ by default,
+2. the ISE-based `xflow` to synthesize the designs for Xilinx platforms, and
+3. a Java8 environment.
+
 # Database Format
 
 The computation is managed through a custom database of subproblems.
