@@ -46,9 +46,9 @@ public abstract class Solver {
 
   private Database  db;
 
-  protected Solver(final int  limit, final int  timeout_sec) {
+  protected Solver(final int  limit, final int  timeout_min) {
     this.limit   = limit;
-    this.timeout = 1000*timeout_sec;
+    this.timeout = 60000*timeout_min;
     this.pending = new LinkedHashMap<>();
     this.solved  = new AtomicInteger();
   }
