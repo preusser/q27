@@ -42,7 +42,8 @@ FPGA resources.
   - using independent regional clock resources for subsets of the solver
     slices.
 
-3. Top our own world record from 2009 obtained by computing
+3. Top our own [world record](http://queens.inf.tu-dresden.de/)
+   from 2009 obtained by computing
    **Q(26)=22.317.699.616.364.044** using a similar distributed FPGA
    infrastructure.
 
