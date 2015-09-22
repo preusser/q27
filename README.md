@@ -18,6 +18,7 @@ Table of Contents
  1. [License](#license)
  2. [Purpose](#purpose)
  3. [How to Contribute](#how-to-contribute)
+ 4. [Further Projects of Interest](#further-projects-of-interest)
 
 ------------------------------------------------------------------------------
 
@@ -82,3 +83,14 @@ FPGA resources.
 
 In either case, you will have fully transparent access to all sources
 through this site and will receive a honorable mention on this page.
+
+## Further Projects of Interest
+
+1. Use *Machine Learning* on the available solution counts of subproblems
+   to build a predictor for the solution counts of subproblems yet to
+   deal with. Such a predictor might help to describe and understand the
+   patterns in the solution space.
+2. Build a high-performance, highly-parallel solver using GPGPU technology
+   as an alternative acceleration approach to contribute to this computation.
+3. Ultimately, find the *Formula* that directly computes the valid solution
+   count from the problem size N.
