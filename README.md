@@ -6,6 +6,13 @@ power of designated circuit designs implemented on FPGA accelerators at the
 example of enumerating and couting all the valid solutions of the
 27-[Queens Puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle). 
 
+# Sponsors
+
+**Wanted**: If you are willing to **contribute compute time** on your own
+hardware or even to **donate devices**, please contact
+thomas.preusser@tu-dresden.de.
+
+
 Table of Contents
 -----------------
  1. [License](#license)
@@ -53,9 +60,12 @@ FPGA resources.
    long-running computation. We put much effort in testing and eliminating
    bugs so as to avoid wasting computational effort. Any bug must be found
    as early as possible.
-2. **Contribute Hardware**: We are computing using the idle time of the
-   most powerful FPGA devices at the VLSI-EDA Chair of TU Dresden. While we,
-   indeed, have powerful devices available, their number is fairly small:
+2. **Contribute Hardware**: We are currently computing using
+   the idle time of the most powerful FPGA devices at the
+   [VLSI-EDA Chair](http://vlsi-eda.inf.tu-dresden.de/) of
+   [TU Dresden](http://www.tu-dresden.de/). While we,
+   indeed, have powerful devices available, their number is
+   rather small:
 
    Count | Board | Family | Device | Solvers | Clock | SE
    ------|-------|--------|--------|---------|-------|-----
@@ -65,5 +75,10 @@ FPGA resources.
 
    **SE** (Solver Equivalent) - The performance of one solver slice running at 100 MHz.
 
+   We will happily port to other powerful platforms!
+
    If you are willing to **contribute compute time** on your own hardware or
    even to **donate devices**, please contact thomas.preusser@tu-dresden.de.
+
+In either case you have fully transparent access to all sources through this
+site and will receive a honorable mention on this page.
