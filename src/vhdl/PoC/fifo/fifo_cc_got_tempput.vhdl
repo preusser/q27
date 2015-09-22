@@ -347,11 +347,11 @@ begin
         rclk   => clk,
         wce    => '1',
 
-        wa     => std_logic_vector(wa),
+        wa     => wa,
         we     => we,
         d      => din,
 
-        ra     => std_logic_vector(ra),
+        ra     => ra,
         rce    => re,
         q      => do
       );

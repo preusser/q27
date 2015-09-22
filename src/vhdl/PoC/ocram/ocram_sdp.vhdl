@@ -56,7 +56,8 @@
 -- ============================================================================
 
 library	IEEE;
-use			IEEE.std_logic_1164.all;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
 
 entity ocram_sdp is
   generic (
@@ -69,15 +70,12 @@ entity ocram_sdp is
     wclk : in  std_logic;  														-- write clock
     wce  : in  std_logic;  														-- write clock-enable
     we   : in  std_logic;  														-- write enable
-    ra   : in  std_logic_vector(A_BITS-1 downto 0);  	-- read address
-    wa   : in  std_logic_vector(A_BITS-1 downto 0);  	-- write address
+    ra   : in  unsigned(A_BITS-1 downto 0);  					-- read address
+    wa   : in  unsigned(A_BITS-1 downto 0);				  	-- write address
     d    : in  std_logic_vector(D_BITS-1 downto 0);  	-- data in
     q    : out std_logic_vector(D_BITS-1 downto 0));  -- data out
 end entity;
 
-
-library IEEE;
-use IEEE.numeric_std.all;
 
 library PoC;
 use PoC.config.all;
@@ -112,7 +110,7 @@ begin
 			begin
 				if rising_edge(wclk) then
 					if (wce and we) = '1' then
-						ram(to_integer(unsigned(wa))) <= d;
+						ram(to_integer(wa)) <= d;
 					end if;
 				end if;
 			end process;
@@ -127,7 +125,7 @@ begin
 							q <= (others => 'X');
 						else
 					--synthesis translate_on
-							q <= ram(to_integer(unsigned(ra)));
+							q <= ram(to_integer(ra));
 					--synthesis translate_off
 						end if;
 					--synthesis translate_on

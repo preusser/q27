@@ -120,11 +120,11 @@ architecture rtl of fifo_cc_got is
   -- Backing Memory Connectivity
 
   -- Write Port
-  signal wa : std_logic_vector(A_BITS-1 downto 0);
+  signal wa : unsigned(A_BITS-1 downto 0);
   signal we : std_logic;
 
   -- Read Port
-  signal ra : std_logic_vector(A_BITS-1 downto 0);
+  signal ra : unsigned(A_BITS-1 downto 0);
   signal re : std_logic;
 
   -- Internal full and empty indicators
@@ -213,8 +213,8 @@ begin
       end if;
     end if;
   end process;
-  wa <= std_logic_vector(IP0);
-  ra <= std_logic_vector(OP0);
+  wa <= IP0;
+  ra <= OP0;
 
   -- Fill State Computation (soft indicators)
   process(IP0, OP0, fulli)
@@ -411,7 +411,7 @@ begin
         else
         --synthesis translate_on
           if we = '1' then
-            regfile(to_integer(unsigned(wa))) <= din;
+            regfile(to_integer(wa)) <= din;
           end if;
         --synthesis translate_off
         end if;
@@ -421,8 +421,8 @@ begin
 
     -- Memory Output
     re    <= got and not empti;
-    dout  <= (others => 'X') when Is_X(ra) else
-             regfile(to_integer(unsigned(ra)));
+    dout  <= (others => 'X') when Is_X(std_logic_vector(ra)) else
+             regfile(to_integer(ra));
     valid <= not empti;
 
   end generate genSmall;
