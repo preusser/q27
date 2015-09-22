@@ -138,9 +138,20 @@ namespace {
       if(e.solved())  hist[e.time()]++;
     }
     unsigned  cumm = 0;
+    unsigned  date = 0;
+    std::cout << std::setfill('0');
     for(auto const &e : hist) {
-      cumm += e.second;
-      std::cout << e.first << '\t' << cumm << '\n';
+      unsigned const  k = e.first;
+      unsigned const  v = e.second;
+      cumm += v;
+      std::cout << k << '\t' << v << '\t' << cumm;
+      if((k>>9) != date) {
+	date = k >> 9;
+	std::cout << '\t' << 2015+(date>>9) << '-'
+		  << std::setw(2) << 1+(0xF&(date>>5)) << '-'
+		  << std::setw(2) << (date & 0x1F);
+      }
+      std::cout << '\n';
     }
     std::cout << std::flush;
     return  0;
