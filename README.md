@@ -42,7 +42,7 @@ FPGA resources.
     clock speed (performance of a single solver).
 
 2. As the problem is heavily compute- rather than communication-bound, further
-   optimzation potential may be explored in:
+   optimization potential may be explored in:
   - moving the solver communication from the compute clock domain into the
     slow clock domain (which is currently only used for system services such
     as the fan control), and
@@ -80,5 +80,5 @@ FPGA resources.
    If you are willing to **contribute compute time** on your own hardware or
    even to **donate devices**, please contact thomas.preusser@tu-dresden.de.
 
-In either case you have fully transparent access to all sources through this
-site and will receive a honorable mention on this page.
+In either case, you will have fully transparent access to all sources
+through this site and will receive a honorable mention on this page.
