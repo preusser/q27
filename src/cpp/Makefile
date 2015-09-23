@@ -1,11 +1,17 @@
 CPPFLAGS := -std=gnu++11 -Wall -O3
 CC       := g++
 
-.PHONY: all clean
+.PHONY: all range clean
 
 all: coronal2 q27db
+range/%:
+	$(MAKE) -C range/ $*
+
 coronal2: DBEntry.o Symmetry.o
-q27db: Database.o DBEntry.o Symmetry.o -lboost_iostreams
+
+q27db: CPPFLAGS += -lboost_iostreams
+q27db: Database.o DBEntry.o Symmetry.o range/IR.o range/RangeParser.o
 
 clean:
+	$(MAKE) -C range/ clean
 	rm -rf *~ *.o coronal2 q27db

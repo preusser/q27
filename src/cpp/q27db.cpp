@@ -31,8 +31,11 @@
 #include <string.h>
 
 #include "Database.hpp"
+#include "range/RangeParser.hpp"
+#include "range/IR.hpp"
 
 using namespace queens;
+using namespace queens::range;
 
 namespace {
 
@@ -267,6 +270,19 @@ namespace {
 
   } // merge()
 
+  int print(Database const &db, int const  argc, char const *const  argv[]) {
+    if(argc == 1) {
+      std::unique_ptr<SRange>  range(RangeParser::parse(argv[0]));
+      for(DBEntry const &e : range->resolve(db)) {
+	std::cout << e << std::endl;
+      }
+      return  0;
+    }
+    usage();
+    return  1;
+
+  } // print()
+
 } // anonymous namespace
 
 int main(int const  argc, char const *const  argv[]) {
@@ -280,6 +296,7 @@ int main(int const  argc, char const *const  argv[]) {
     else if(strcmp(cmd, "slice" ) == 0)  return  slice(db, argc-3, argv+3);
     else if(strcmp(cmd, "untake") == 0)  return  untake(db);
     else if(strcmp(cmd, "merge" ) == 0)  return  merge(db, argc-3, argv+3);
+    else if(strcmp(cmd, "print" ) == 0)  return  print(db, argc-3, argv+3);
     else {
       std::cerr << "Unknown command: " << cmd << "\n\n";
     }

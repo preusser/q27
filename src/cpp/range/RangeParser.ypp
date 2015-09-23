@@ -1,0 +1,188 @@
+%header{
+#include "ParseException.hpp"
+#include <memory>
+
+namespace queens {
+  namespace range {
+    class SVal;
+    class SRange;
+  }
+}
+}
+
+/**
+ * @author Thomas B. Preußer <thomas.preusser@utexas.edu>
+ */
+%class queens::range::RangeParser {
+  
+  char const *m_line;
+  SRange     *m_range;
+
+//- Life Cycle ---------------------------------------------------------------
+private:
+  RangeParser() {}
+  ~RangeParser() {}
+
+//- Parser Interface Methods -------------------------------------------------
+private:
+  void error(std::string  msg);
+  unsigned nextToken(YYSVal &sval);
+
+//- Private Helpers ----------------------------------------------------------
+private:
+  void buildSpec(uint64_t &spec, unsigned &wild, SVal const &position);
+
+//- Usage Interface ----------------------------------------------------------
+public:
+  static SRange *parse(char const *line) throw (ParseException);
+}
+
+%sval SVal*
+%impl {
+#include "RangeParser.hpp"
+#include "IR.hpp"
+
+#include <cassert>
+
+#include <string.h>
+
+  using namespace queens::range;
+
+//- Parser Interface Methods -------------------------------------------------
+inline void RangeParser::error(std::string  msg) {
+  throw  ParseException(msg, 0);
+}
+
+unsigned RangeParser::nextToken(YYSVal &sval) {
+  assert(m_line != 0);
+
+ again:
+  char const  c = *m_line;
+  switch(c) {
+  case 'f':
+    if(strncmp(m_line, "first", 5) == 0) {
+      m_line += 5;
+      return  FIRST;
+    }
+    break;
+
+  case 'l':
+    if(strncmp(m_line, "last", 4) == 0) {
+      m_line += 4;
+      return  LAST;
+    }
+    break;
+
+  case 's':
+    if(strncmp(m_line, "solved", 6) == 0) {
+      m_line += 6;
+      return  SOLVED;
+    }
+    break;
+
+  case 't':
+    if(strncmp(m_line, "taken", 5) == 0) {
+      m_line += 5;
+      return  TAKEN;
+    }
+    break;
+
+  default:
+    if(isspace(c)) {
+      m_line++;
+      goto again;
+    }
+    if(isdigit(c)) {
+      char *end;
+      int  const  val = (int)strtol(m_line, &end, 0);
+      m_line = end;
+      sval = new SPosition(val < 0? 0 : val > 26? 26 : val);
+      return  POSITION;
+    }
+    m_line++;
+
+  case '\0':
+    return  c;
+  }    
+
+  error("Illegal Token");
+  assert(false);
+  return  0;
+}
+
+//- Public Usage Interface ---------------------------------------------------
+SRange *RangeParser::parse(char const *line) throw (ParseException) {
+  RangeParser  p;
+  try {
+    p.m_line = line;
+    p.parse();
+    return  p.m_range;
+  }
+  catch(ParseException &e) {
+    e.position(p.m_line - line);
+    throw;
+  }
+}
+
+
+void RangeParser::buildSpec(uint64_t &spec, unsigned &wild, SVal const &position) {
+  int const  pos = static_cast<SPosition const&>(position);
+  spec <<= 5;
+  if(pos < 0)  wild++;
+  else {
+    if(wild > 0)  error("Fixed placement not allowed after wildcard.");
+    spec |= pos;
+  }
+}
+ 
+} // impl
+
+%%
+%token FIRST LAST TAKEN SOLVED POSITION
+%start range
+%%
+range : addr {
+          m_range = new SRange(static_cast<SAddress const*>($1), nullptr);
+        }
+      | addr '-' addr {
+ 	  SAddress *const  beg = static_cast<SAddress*>($1);
+ 	  SAddress *const  end = static_cast<SAddress*>($3);
+	  beg->makeLower();
+	  end->makeUpper();
+	  m_range = new SRange(beg, end);
+	}
+
+addr : FIRST {
+        $$ = SAddress::createFirst(SPredicate::createTrue());
+       }
+     | FIRST '(' pred ')' {
+	$$ = SAddress::createFirst(static_cast<SPredicate const*>($3));
+       }
+     | LAST {
+	$$ = SAddress::createLast(SPredicate::createTrue());
+       }
+     | LAST '(' pred ')' {
+	$$ = SAddress::createLast(static_cast<SPredicate const*>($3));
+       }
+     | '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')' {
+         uint64_t  spec = 0L;
+	 unsigned  wild = 0;
+	 buildSpec(spec, wild, *$2);
+	 buildSpec(spec, wild, *$4);
+	 buildSpec(spec, wild, *$7);
+	 buildSpec(spec, wild, *$9);
+	 buildSpec(spec, wild, *$12);
+	 buildSpec(spec, wild, *$14);
+	 buildSpec(spec, wild, *$17);
+	 buildSpec(spec, wild, *$19);
+	 $$ = SAddress::create(spec, wild);
+       }
+
+pred : TAKEN  { $$ = SPredicate::createTaken(); }
+     | SOLVED { $$ = SPredicate::createSolved(); }
+     | '!' pred {
+	$$ = SPredicate::createInverted(static_cast<SPredicate const*>($2));
+       }
+
+pos : POSITION { $$ = $1; }
+    | '*' { $$ = new SPosition(-1); }
