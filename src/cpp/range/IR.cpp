@@ -130,5 +130,5 @@ SRange::~SRange() {}
 DBConstRange SRange::resolve(DBConstRange const &db) const {
   DBEntry const *beg = (*m_beg)(db, SAddress::AddrType::LOWER);
   DBEntry const *end = (*m_end)(db, SAddress::AddrType::UPPER);
-  return  DBConstRange(beg, beg > end? beg : end == db.end()? end : end+1);
+  return  DBConstRange(beg, (beg > end)||(end == nullptr)? beg : end == db.end()? end : end+1);
 }

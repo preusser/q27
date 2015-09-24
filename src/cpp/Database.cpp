@@ -23,9 +23,14 @@
 using namespace queens;
 
 DBEntry const *DBConstRange::lub(uint64_t  spec) const {
+  DBEntry const *lo = begin();
+  DBEntry const *hi = end();
+  if(lo >= hi)  return  hi;
+  hi--;
+
   spec &= ~UINT64_C(0x1F); // ignore symmetry and CRC
-  DBEntry const *lo = begin(); if(spec <= lo->spec())  return  lo;
-  DBEntry const *hi = end()-1; if(spec >  hi->spec())  return  end();
+  if(spec <= lo->spec())  return  lo;
+  if(spec >  hi->spec())  return  end();
 
   // Invariant: lo->spec() < spec <= hi->spec()
   while(true) {
@@ -37,9 +42,14 @@ DBEntry const *DBConstRange::lub(uint64_t  spec) const {
   }
 }
 DBEntry const *DBConstRange::glb(uint64_t  spec) const {
+  DBEntry const *lo = begin();
+  DBEntry const *hi = end();
+  if(lo >= hi)  return  nullptr;
+  hi--;
+
   spec |= UINT64_C(0x1F); // ignore symmetry and CRC
-  DBEntry const *lo = begin(); if(spec <  lo->spec())  return  nullptr;
-  DBEntry const *hi = end()-1; if(spec >= hi->spec())  return  hi;
+  if(spec <  lo->spec())  return  nullptr;
+  if(spec >= hi->spec())  return  hi;
 
   // Invariant: lo->spec() <= spec < hi->spec()
   while(true) {

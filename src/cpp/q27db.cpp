@@ -44,7 +44,7 @@ namespace {
       "\t\t\tslice <output.db> [taken|stale <timeout_min>]\n"
       "\t\t\tuntake\n"
       "\t\t\tmerge <contrib.db> <secondary.db>\n"
-      "\t\t\tprint <range>\n"
+      "\t\t\tprint <range> ...\n"
 	      << std::endl;
     exit(1);
   }
@@ -99,19 +99,6 @@ namespace {
 	  gapStart = nullptr;
 	}
       }
-
-      /*
-      // Printing
-      if(print) {
-	uint64be_t const  pre = e.spec() >> 5;
-	uint8_t const *pp = ((uint8_t const*)&pre) + 3;
-	std::cout << std::hex << std::setfill('0');
-	for(unsigned i = 0; i < 5; i++) {
-	  std::cout << "0x" << std::setw(2) << (unsigned)pp[i] << ' ';
-	}
-	std::cout << std::dec << std::setfill(' ') << std::setw(10) << e.count() << std::endl;
-      }
-      */
     }
 
     if(invalid)  std::cout << "! INVALID: " << invalid << '\n';
@@ -268,20 +255,27 @@ namespace {
   } // merge()
 
   int print(DBConstRange const &db, int const  argc, char const *const  argv[]) {
-    if(argc == 1) {
-      try {
-	std::shared_ptr<SRange>  range(RangeParser::parse(argv[0]));
-	for(DBEntry const &e : range->resolve(db)) {
-	  std::cout << '@' << std::setw(10) << (&e-db.begin()) << ": " << e << std::endl;
+    if(argc > 0) {
+      DBConstRange  range = db;
+      for(int  i = 0; i < argc; i++) {
+	try {
+	  range = RangeParser::parse(argv[i])->resolve(range);
 	}
-	return  0;
+	catch(ParseException const &e) {
+	  std::cerr << "Exception parsing the range specification:\n"
+		    << "\t'" << argv[0] << "' @" << e.position() << ": " << e.message()
+		    << std::endl;
+	  return  1;
+	}
       }
-      catch(ParseException const &e) {
-	std::cerr << "Exception parsing the range specification:\n"
-		  << "\t'" << argv[0] << "' @" << e.position() << ": " << e.message()
-		  << std::endl;
+      {
+	unsigned const  n = range.size();
+	std::cout << n << " Entr" << (n==1? "y" : "ies") << std::endl;
       }
-      return  1;
+      for(DBEntry const &e : range) {
+	std::cout << '@' << std::setw(10) << (&e-db.begin()) << ": " << e << std::endl;
+      }
+      return  0;
     }
     usage();
     return  1;
