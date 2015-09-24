@@ -29,55 +29,39 @@ using namespace queens::range;
 SPosition::~SPosition() {}
  
 //- class SPredicate ---------------------------------------------------------
-SPredicate *SPredicate::createTrue() {
-  class True : public SPredicate {
-  public:
-    True() {}
-    ~True() {}
+class : public SPredicate {
+  bool operator()(DBEntry const &e) const { return  true; }
+} PRED_TRUE;
+std::shared_ptr<SPredicate> const  SPredicate::TRUE(&PRED_TRUE, [](void*){});
 
-  public:
-    bool operator()(DBEntry const &e) const { return  true; }
-  };
-  return  new True();
-}
-SPredicate *SPredicate::createTaken() {
-  class Taken : public SPredicate {
-  public:
-    Taken() {}
-    ~Taken() {}
+class : public SPredicate {
+  bool operator()(DBEntry const &e) const { return  e.taken() && !e.solved(); }
+} PRED_TAKEN;
+std::shared_ptr<SPredicate> const  SPredicate::TAKEN(&PRED_TAKEN, [](void*){});
 
-  public:
-    bool operator()(DBEntry const &e) const { return  e.taken() && !e.solved(); }
-  };
-  return  new Taken();
-}
-SPredicate *SPredicate::createSolved() {
-  class Solved : public SPredicate {
-  public:
-    Solved() {}
-    ~Solved() {}
+class : public SPredicate {
+  bool operator()(DBEntry const &e) const { return  e.solved(); }
+} PRED_SOLVED;
+std::shared_ptr<SPredicate> const  SPredicate::SOLVED(&PRED_SOLVED, [](void*){});
 
-  public:
-    bool operator()(DBEntry const &e) const { return  e.solved(); }
-  };
-  return  new Solved();
-}
-SPredicate *SPredicate::createInverted(std::shared_ptr<SPredicate> target) {
+std::shared_ptr<SPredicate>
+SPredicate::createInverted(std::shared_ptr<SPredicate> const &target) {
+
   class Inverted : public SPredicate {
     std::shared_ptr<SPredicate>  m_target;
 
   public:
-    Inverted(std::shared_ptr<SPredicate> target) : m_target(target) {}
+    Inverted(std::shared_ptr<SPredicate> const &target) : m_target(target) {}
     ~Inverted() {}
 
   public:
     bool operator()(DBEntry const &e) const { return !(*m_target)(e); }
   };
-  return  new Inverted(target);
+  return  std::make_shared<Inverted>(target);
 }
 
 //- class SAddress -----------------------------------------------------------
-SAddress *SAddress::create(uint64_t  spec, unsigned  wild) {
+std::shared_ptr<SAddress> SAddress::create(uint64_t  spec, unsigned  wild) {
   class RawAddress : public SAddress {
     uint64_t const  m_spec;
     uint64_t const  m_mask;
@@ -98,15 +82,15 @@ SAddress *SAddress::create(uint64_t  spec, unsigned  wild) {
       return  nullptr;
     }
   };
-  return  new RawAddress(spec, wild);
+  return  std::make_shared<RawAddress>(spec, wild);
 }
 
-SAddress *SAddress::createFirst(std::shared_ptr<SPredicate> p) {
+std::shared_ptr<SAddress> SAddress::createFirst(std::shared_ptr<SPredicate> const &p) {
   class First : public SAddress {
     std::shared_ptr<SPredicate>  m_pred;
 
   public:
-    First(std::shared_ptr<SPredicate> pred) : m_pred(pred) {}
+    First(std::shared_ptr<SPredicate> const &pred) : m_pred(pred) {}
     ~First() {}
 
   public:
@@ -117,15 +101,15 @@ SAddress *SAddress::createFirst(std::shared_ptr<SPredicate> p) {
       return  db.end();
     }
   };
-  return  new First(p);
+  return  std::make_shared<First>(p);
 }
 
-SAddress *SAddress::createLast(std::shared_ptr<SPredicate> p) {
+std::shared_ptr<SAddress> SAddress::createLast(std::shared_ptr<SPredicate> const &p) {
   class Last : public SAddress {
     std::shared_ptr<SPredicate const>  m_pred;
 
   public:
-    Last(std::shared_ptr<SPredicate const> pred) : m_pred(pred) {}
+    Last(std::shared_ptr<SPredicate const> const &pred) : m_pred(pred) {}
     ~Last() {}
 
   public:
@@ -137,7 +121,7 @@ SAddress *SAddress::createLast(std::shared_ptr<SPredicate> p) {
       return  nullptr;
     }
   };
-  return  new Last(p);
+  return  std::make_shared<Last>(p);
 }
 
 //- class SRange -------------------------------------------------------------

@@ -175,16 +175,16 @@ range : addr {
 	}
 
 addr : FIRST {
-        $$ = std::shared_ptr<SVal>(SAddress::createFirst(std::shared_ptr<SPredicate>(SPredicate::createTrue())));
+        $$ = SAddress::createFirst(SPredicate::TRUE);
        }
      | FIRST '(' pred ')' {
-	$$ = std::shared_ptr<SVal>(SAddress::createFirst(std::static_pointer_cast<SPredicate>($3)));
+	$$ = SAddress::createFirst(std::static_pointer_cast<SPredicate>($3));
        }
      | LAST {
-	$$ = std::shared_ptr<SVal>(SAddress::createLast(std::shared_ptr<SPredicate>(SPredicate::createTrue())));
+	$$ = SAddress::createLast(SPredicate::TRUE);
        }
      | LAST '(' pred ')' {
-	$$ = std::shared_ptr<SVal>(SAddress::createLast(std::static_pointer_cast<SPredicate>($3)));
+	$$ = SAddress::createLast(std::static_pointer_cast<SPredicate>($3));
        }
      | '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')' {
          uint64_t  spec = 0L;
@@ -197,13 +197,13 @@ addr : FIRST {
 	 buildSpec(spec, wild, *$14);
 	 buildSpec(spec, wild, *$17);
 	 buildSpec(spec, wild, *$19);
-	 $$ = std::shared_ptr<SAddress>(SAddress::create(spec, wild));
+	 $$ = SAddress::create(spec, wild);
        }
 
-pred : TAKEN  { $$ = std::shared_ptr<SPredicate>(SPredicate::createTaken()); }
-     | SOLVED { $$ = std::shared_ptr<SPredicate>(SPredicate::createSolved()); }
+pred : TAKEN  { $$ = SPredicate::TAKEN; }
+     | SOLVED { $$ = SPredicate::SOLVED; }
      | '!' pred {
-	$$ = std::shared_ptr<SPredicate>(SPredicate::createInverted(std::static_pointer_cast<SPredicate>($2)));
+	$$ = SPredicate::createInverted(std::static_pointer_cast<SPredicate>($2));
        }
 
 pos : POSITION { $$ = $1; }

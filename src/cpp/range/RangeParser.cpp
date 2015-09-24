@@ -352,7 +352,7 @@ break;
 case 3: {
 #line 178 "RangeParser.ypp"
 
-        yylval = std::shared_ptr<SVal>(SAddress::createFirst(std::shared_ptr<SPredicate>(SPredicate::createTrue())));
+        yylval = SAddress::createFirst(SPredicate::TRUE);
        
 #line 357 "RangeParser.cpp"
 break;
@@ -360,7 +360,7 @@ break;
 case 4: {
 #line 181 "RangeParser.ypp"
 
-	yylval = std::shared_ptr<SVal>(SAddress::createFirst(std::static_pointer_cast<SPredicate>(yystack[yylen - 3])));
+	yylval = SAddress::createFirst(std::static_pointer_cast<SPredicate>(yystack[yylen - 3]));
        
 #line 365 "RangeParser.cpp"
 break;
@@ -368,7 +368,7 @@ break;
 case 5: {
 #line 184 "RangeParser.ypp"
 
-	yylval = std::shared_ptr<SVal>(SAddress::createLast(std::shared_ptr<SPredicate>(SPredicate::createTrue())));
+	yylval = SAddress::createLast(SPredicate::TRUE);
        
 #line 373 "RangeParser.cpp"
 break;
@@ -376,7 +376,7 @@ break;
 case 6: {
 #line 187 "RangeParser.ypp"
 
-	yylval = std::shared_ptr<SVal>(SAddress::createLast(std::static_pointer_cast<SPredicate>(yystack[yylen - 3])));
+	yylval = SAddress::createLast(std::static_pointer_cast<SPredicate>(yystack[yylen - 3]));
        
 #line 381 "RangeParser.cpp"
 break;
@@ -394,27 +394,27 @@ case 7: {
 	 buildSpec(spec, wild, *yystack[yylen - 14]);
 	 buildSpec(spec, wild, *yystack[yylen - 17]);
 	 buildSpec(spec, wild, *yystack[yylen - 19]);
-	 yylval = std::shared_ptr<SAddress>(SAddress::create(spec, wild));
+	 yylval = SAddress::create(spec, wild);
        
 #line 399 "RangeParser.cpp"
 break;
 }
 case 8: {
 #line 204 "RangeParser.ypp"
- yylval = std::shared_ptr<SPredicate>(SPredicate::createTaken()); 
+ yylval = SPredicate::TAKEN; 
 #line 405 "RangeParser.cpp"
 break;
 }
 case 9: {
 #line 205 "RangeParser.ypp"
- yylval = std::shared_ptr<SPredicate>(SPredicate::createSolved()); 
+ yylval = SPredicate::SOLVED; 
 #line 411 "RangeParser.cpp"
 break;
 }
 case 10: {
 #line 206 "RangeParser.ypp"
 
-	yylval = std::shared_ptr<SPredicate>(SPredicate::createInverted(std::static_pointer_cast<SPredicate>(yystack[yylen - 2])));
+	yylval = SPredicate::createInverted(std::static_pointer_cast<SPredicate>(yystack[yylen - 2]));
        
 #line 419 "RangeParser.cpp"
 break;
