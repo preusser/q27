@@ -5,7 +5,6 @@ CC       := g++
 
 all: RangeParser.o IR.o
 
-RangeParser.o: CPPFLAGS += -Wno-maybe-uninitialized
 RangeParser.cpp RangeParser.hpp: RangeParser.ypp
 	wisent $^
 

@@ -62,12 +62,12 @@ SPredicate *SPredicate::createSolved() {
   };
   return  new Solved();
 }
-SPredicate *SPredicate::createInverted(SPredicate const *target) {
+SPredicate *SPredicate::createInverted(std::shared_ptr<SPredicate> target) {
   class Inverted : public SPredicate {
-    std::unique_ptr<SPredicate const>  m_target;
+    std::shared_ptr<SPredicate>  m_target;
 
   public:
-    Inverted(SPredicate const *target) : m_target(target) {}
+    Inverted(std::shared_ptr<SPredicate> target) : m_target(target) {}
     ~Inverted() {}
 
   public:
@@ -101,12 +101,12 @@ SAddress *SAddress::create(uint64_t  spec, unsigned  wild) {
   return  new RawAddress(spec, wild);
 }
 
-SAddress *SAddress::createFirst(SPredicate const *p) {
+SAddress *SAddress::createFirst(std::shared_ptr<SPredicate> p) {
   class First : public SAddress {
-    std::unique_ptr<SPredicate const>  m_pred;
+    std::shared_ptr<SPredicate>  m_pred;
 
   public:
-    First(SPredicate const *pred) : m_pred(pred) {}
+    First(std::shared_ptr<SPredicate> pred) : m_pred(pred) {}
     ~First() {}
 
   public:
@@ -120,12 +120,12 @@ SAddress *SAddress::createFirst(SPredicate const *p) {
   return  new First(p);
 }
 
-SAddress *SAddress::createLast(SPredicate const *p) {
+SAddress *SAddress::createLast(std::shared_ptr<SPredicate> p) {
   class Last : public SAddress {
-    std::unique_ptr<SPredicate const>  m_pred;
+    std::shared_ptr<SPredicate const>  m_pred;
 
   public:
-    Last(SPredicate const *pred) : m_pred(pred) {}
+    Last(std::shared_ptr<SPredicate const> pred) : m_pred(pred) {}
     ~Last() {}
 
   public:

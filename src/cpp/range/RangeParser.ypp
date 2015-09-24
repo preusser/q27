@@ -35,8 +35,8 @@ namespace queens {
  */
 %class queens::range::RangeParser {
   
-  char const *m_line;
-  SRange     *m_range;
+  char const              *m_line;
+  std::shared_ptr<SRange>  m_range;
 
 //- Life Cycle ---------------------------------------------------------------
 private:
@@ -54,10 +54,10 @@ private:
 
 //- Usage Interface ----------------------------------------------------------
 public:
-  static SRange *parse(char const *line) throw (ParseException);
+  static std::shared_ptr<SRange> parse(char const *line) throw (ParseException);
 }
 
-%sval SVal*
+%sval std::shared_ptr<SVal>
 %impl {
 #include "RangeParser.hpp"
 #include "IR.hpp"
@@ -116,7 +116,7 @@ unsigned RangeParser::nextToken(YYSVal &sval) {
       char *end;
       int  const  val = (int)strtol(m_line, &end, 0);
       m_line = end;
-      sval = new SPosition(val < 0? 0 : val > 26? 26 : val);
+      sval = std::make_shared<SPosition>(val < 0? 0 : val > 26? 26 : val);
       return  POSITION;
     }
     m_line++;
@@ -131,7 +131,7 @@ unsigned RangeParser::nextToken(YYSVal &sval) {
 }
 
 //- Public Usage Interface ---------------------------------------------------
-SRange *RangeParser::parse(char const *line) throw (ParseException) {
+std::shared_ptr<SRange> RangeParser::parse(char const *line) throw (ParseException) {
   RangeParser  p;
   try {
     p.m_line = line;
@@ -162,25 +162,29 @@ void RangeParser::buildSpec(uint64_t &spec, unsigned &wild, SVal const &position
 %start range
 %%
 range : addr {
-          m_range = new SRange(static_cast<SAddress const*>($1),
-			       static_cast<SAddress const*>($1));
+          m_range = std::make_shared<SRange>(
+	              std::static_pointer_cast<SAddress>($1),
+		      std::static_pointer_cast<SAddress>($1)
+		    );
         }
       | addr '-' addr {
-          m_range = new SRange(static_cast<SAddress const*>($1),
-			       static_cast<SAddress const*>($3));
+          m_range = std::make_shared<SRange>(
+	              std::static_pointer_cast<SAddress>($1),
+		      std::static_pointer_cast<SAddress>($3)
+		    );
 	}
 
 addr : FIRST {
-        $$ = SAddress::createFirst(SPredicate::createTrue());
+        $$ = std::shared_ptr<SVal>(SAddress::createFirst(std::shared_ptr<SPredicate>(SPredicate::createTrue())));
        }
      | FIRST '(' pred ')' {
-	$$ = SAddress::createFirst(static_cast<SPredicate const*>($3));
+	$$ = std::shared_ptr<SVal>(SAddress::createFirst(std::static_pointer_cast<SPredicate>($3)));
        }
      | LAST {
-	$$ = SAddress::createLast(SPredicate::createTrue());
+	$$ = std::shared_ptr<SVal>(SAddress::createLast(std::shared_ptr<SPredicate>(SPredicate::createTrue())));
        }
      | LAST '(' pred ')' {
-	$$ = SAddress::createLast(static_cast<SPredicate const*>($3));
+	$$ = std::shared_ptr<SVal>(SAddress::createLast(std::static_pointer_cast<SPredicate>($3)));
        }
      | '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')' {
          uint64_t  spec = 0L;
@@ -193,14 +197,14 @@ addr : FIRST {
 	 buildSpec(spec, wild, *$14);
 	 buildSpec(spec, wild, *$17);
 	 buildSpec(spec, wild, *$19);
-	 $$ = SAddress::create(spec, wild);
+	 $$ = std::shared_ptr<SAddress>(SAddress::create(spec, wild));
        }
 
-pred : TAKEN  { $$ = SPredicate::createTaken(); }
-     | SOLVED { $$ = SPredicate::createSolved(); }
+pred : TAKEN  { $$ = std::shared_ptr<SPredicate>(SPredicate::createTaken()); }
+     | SOLVED { $$ = std::shared_ptr<SPredicate>(SPredicate::createSolved()); }
      | '!' pred {
-	$$ = SPredicate::createInverted(static_cast<SPredicate const*>($2));
+	$$ = std::shared_ptr<SPredicate>(SPredicate::createInverted(std::static_pointer_cast<SPredicate>($2)));
        }
 
 pos : POSITION { $$ = $1; }
-    | '*' { $$ = new SPosition(-1); }
+    | '*' { $$ = std::make_shared<SPosition>(-1); }

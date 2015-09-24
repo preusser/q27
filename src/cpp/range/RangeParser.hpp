@@ -1,6 +1,6 @@
 #ifndef QUEENS_RANGE_RANGEPARSER_HPP_INCLUDED
 #define QUEENS_RANGE_RANGEPARSER_HPP_INCLUDED
-#line 1 "RangeParser.ypp"
+#line 21 "RangeParser.ypp"
 
 #include "ParseException.hpp"
 #include <memory>
@@ -17,13 +17,13 @@ namespace queens {
 namespace queens {
 namespace range {
 class RangeParser {
-  typedef SVal* YYSVal;
+  typedef std::shared_ptr< SVal > YYSVal;
   class YYStack;
-#line 16 "RangeParser.ypp"
+#line 36 "RangeParser.ypp"
 
   
-  char const *m_line;
-  SRange     *m_range;
+  char const              *m_line;
+  std::shared_ptr<SRange>  m_range;
 
 //- Life Cycle ---------------------------------------------------------------
 private:
@@ -41,7 +41,7 @@ private:
 
 //- Usage Interface ----------------------------------------------------------
 public:
-  static SRange *parse(char const *line) throw (ParseException);
+  static std::shared_ptr<SRange> parse(char const *line) throw (ParseException);
 
 #line 46 "RangeParser.hpp"
 private:

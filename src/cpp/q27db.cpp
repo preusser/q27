@@ -270,7 +270,7 @@ namespace {
   int print(DBConstRange const &db, int const  argc, char const *const  argv[]) {
     if(argc == 1) {
       try {
-	std::unique_ptr<SRange>  range(RangeParser::parse(argv[0]));
+	std::shared_ptr<SRange>  range(RangeParser::parse(argv[0]));
 	for(DBEntry const &e : range->resolve(db)) {
 	  std::cout << e << std::endl;
 	}

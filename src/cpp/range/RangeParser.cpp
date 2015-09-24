@@ -1,4 +1,4 @@
-#line 41 "RangeParser.ypp"
+#line 61 "RangeParser.ypp"
 
 #include "RangeParser.hpp"
 #include "IR.hpp"
@@ -57,7 +57,7 @@ unsigned RangeParser::nextToken(YYSVal &sval) {
       char *end;
       int  const  val = (int)strtol(m_line, &end, 0);
       m_line = end;
-      sval = new SPosition(val < 0? 0 : val > 26? 26 : val);
+      sval = std::make_shared<SPosition>(val < 0? 0 : val > 26? 26 : val);
       return  POSITION;
     }
     m_line++;
@@ -72,7 +72,7 @@ unsigned RangeParser::nextToken(YYSVal &sval) {
 }
 
 //- Public Usage Interface ---------------------------------------------------
-SRange *RangeParser::parse(char const *line) throw (ParseException) {
+std::shared_ptr<SRange> RangeParser::parse(char const *line) throw (ParseException) {
   RangeParser  p;
   try {
     p.m_line = line;
@@ -328,57 +328,61 @@ void queens::range::RangeParser::parse() {
         case 0:         // accept
           return;
 case 1: {
-#line 145 "RangeParser.ypp"
+#line 165 "RangeParser.ypp"
 
-          m_range = new SRange(static_cast<SAddress const*>(yystack[yylen - 1]),
-			       static_cast<SAddress const*>(yystack[yylen - 1]));
+          m_range = std::make_shared<SRange>(
+	              std::static_pointer_cast<SAddress>(yystack[yylen - 1]),
+		      std::static_pointer_cast<SAddress>(yystack[yylen - 1])
+		    );
         
-#line 336 "RangeParser.cpp"
+#line 338 "RangeParser.cpp"
 break;
 }
 case 2: {
-#line 149 "RangeParser.ypp"
+#line 171 "RangeParser.ypp"
 
-          m_range = new SRange(static_cast<SAddress const*>(yystack[yylen - 1]),
-			       static_cast<SAddress const*>(yystack[yylen - 3]));
+          m_range = std::make_shared<SRange>(
+	              std::static_pointer_cast<SAddress>(yystack[yylen - 1]),
+		      std::static_pointer_cast<SAddress>(yystack[yylen - 3])
+		    );
 	
-#line 345 "RangeParser.cpp"
+#line 349 "RangeParser.cpp"
 break;
 }
 case 3: {
-#line 154 "RangeParser.ypp"
+#line 178 "RangeParser.ypp"
 
-        yylval = SAddress::createFirst(SPredicate::createTrue());
+        yylval = std::shared_ptr<SVal>(SAddress::createFirst(std::shared_ptr<SPredicate>(SPredicate::createTrue())));
        
-#line 353 "RangeParser.cpp"
+#line 357 "RangeParser.cpp"
 break;
 }
 case 4: {
-#line 157 "RangeParser.ypp"
+#line 181 "RangeParser.ypp"
 
-	yylval = SAddress::createFirst(static_cast<SPredicate const*>(yystack[yylen - 3]));
+	yylval = std::shared_ptr<SVal>(SAddress::createFirst(std::static_pointer_cast<SPredicate>(yystack[yylen - 3])));
        
-#line 361 "RangeParser.cpp"
+#line 365 "RangeParser.cpp"
 break;
 }
 case 5: {
-#line 160 "RangeParser.ypp"
+#line 184 "RangeParser.ypp"
 
-	yylval = SAddress::createLast(SPredicate::createTrue());
+	yylval = std::shared_ptr<SVal>(SAddress::createLast(std::shared_ptr<SPredicate>(SPredicate::createTrue())));
        
-#line 369 "RangeParser.cpp"
+#line 373 "RangeParser.cpp"
 break;
 }
 case 6: {
-#line 163 "RangeParser.ypp"
+#line 187 "RangeParser.ypp"
 
-	yylval = SAddress::createLast(static_cast<SPredicate const*>(yystack[yylen - 3]));
+	yylval = std::shared_ptr<SVal>(SAddress::createLast(std::static_pointer_cast<SPredicate>(yystack[yylen - 3])));
        
-#line 377 "RangeParser.cpp"
+#line 381 "RangeParser.cpp"
 break;
 }
 case 7: {
-#line 166 "RangeParser.ypp"
+#line 190 "RangeParser.ypp"
 
          uint64_t  spec = 0L;
 	 unsigned  wild = 0;
@@ -390,41 +394,41 @@ case 7: {
 	 buildSpec(spec, wild, *yystack[yylen - 14]);
 	 buildSpec(spec, wild, *yystack[yylen - 17]);
 	 buildSpec(spec, wild, *yystack[yylen - 19]);
-	 yylval = SAddress::create(spec, wild);
+	 yylval = std::shared_ptr<SAddress>(SAddress::create(spec, wild));
        
-#line 395 "RangeParser.cpp"
+#line 399 "RangeParser.cpp"
 break;
 }
 case 8: {
-#line 180 "RangeParser.ypp"
- yylval = SPredicate::createTaken(); 
-#line 401 "RangeParser.cpp"
+#line 204 "RangeParser.ypp"
+ yylval = std::shared_ptr<SPredicate>(SPredicate::createTaken()); 
+#line 405 "RangeParser.cpp"
 break;
 }
 case 9: {
-#line 181 "RangeParser.ypp"
- yylval = SPredicate::createSolved(); 
-#line 407 "RangeParser.cpp"
+#line 205 "RangeParser.ypp"
+ yylval = std::shared_ptr<SPredicate>(SPredicate::createSolved()); 
+#line 411 "RangeParser.cpp"
 break;
 }
 case 10: {
-#line 182 "RangeParser.ypp"
+#line 206 "RangeParser.ypp"
 
-	yylval = SPredicate::createInverted(static_cast<SPredicate const*>(yystack[yylen - 2]));
+	yylval = std::shared_ptr<SPredicate>(SPredicate::createInverted(std::static_pointer_cast<SPredicate>(yystack[yylen - 2])));
        
-#line 415 "RangeParser.cpp"
+#line 419 "RangeParser.cpp"
 break;
 }
 case 11: {
-#line 186 "RangeParser.ypp"
+#line 210 "RangeParser.ypp"
  yylval = yystack[yylen - 1]; 
-#line 421 "RangeParser.cpp"
+#line 425 "RangeParser.cpp"
 break;
 }
 case 12: {
-#line 187 "RangeParser.ypp"
- yylval = new SPosition(-1); 
-#line 427 "RangeParser.cpp"
+#line 211 "RangeParser.ypp"
+ yylval = std::make_shared<SPosition>(-1); 
+#line 431 "RangeParser.cpp"
 break;
 }
         }

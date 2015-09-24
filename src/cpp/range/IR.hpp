@@ -65,7 +65,7 @@ namespace queens {
       static SPredicate *createTrue();
       static SPredicate *createTaken();
       static SPredicate *createSolved();
-      static SPredicate *createInverted(SPredicate const *target);
+      static SPredicate *createInverted(std::shared_ptr<SPredicate> target);
 
     }; // class SPredicate
 
@@ -86,17 +86,17 @@ namespace queens {
       //+ Static Singletons and Factories
     public:
       static SAddress *create(uint64_t  spec, unsigned  wild);
-      static SAddress *createFirst(SPredicate const *p);
-      static SAddress *createLast(SPredicate const *p);
+      static SAddress *createFirst(std::shared_ptr<SPredicate> p);
+      static SAddress *createLast(std::shared_ptr<SPredicate> p);
 
     }; // class SAddress
 
     class SRange : public SVal {
-      SAddress const *m_beg;
-      SAddress const *m_end;
+      std::shared_ptr<SAddress> m_beg;
+      std::shared_ptr<SAddress> m_end;
 
     public:
-      SRange(SAddress const *beg, SAddress const *end) : m_beg(beg), m_end(end) {}
+      SRange(std::shared_ptr<SAddress> beg, std::shared_ptr<SAddress> end) : m_beg(beg), m_end(end) {}
       ~SRange();
 
     public:
