@@ -272,7 +272,7 @@ namespace {
       try {
 	std::shared_ptr<SRange>  range(RangeParser::parse(argv[0]));
 	for(DBEntry const &e : range->resolve(db)) {
-	  std::cout << e << std::endl;
+	  std::cout << '@' << std::setw(10) << (&e-db.begin()) << ": " << e << std::endl;
 	}
 	return  0;
       }
