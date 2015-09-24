@@ -24,8 +24,8 @@ Table of Contents
 
 ## License
 This project is licensed under the terms of the
-[GNU GENERAL PUBLIC LICENSE, Version 3](https://www.gnu.org/licenses/gpl.html).
-A [verbatim copy](LICENSE) of the license document is contained within
+[GNU Affero General Public License, Version 3](http://www.gnu.org/licenses/agpl.html).
+A [verbatim copy](LICENSE.md) of the license document is contained within
 this repository.
 
 The VHDL implementation builds upon the
