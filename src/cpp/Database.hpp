@@ -30,35 +30,66 @@
 #include <boost/iostreams/device/mapped_file.hpp>
 
 namespace queens {
-  class Database {
-    boost::iostreams::mapped_file  db;
-    DBEntry *const  m_beg;
-    DBEntry *const  m_end;
 
-    DBEntry *m_ptr;
+  class DBConstRange {
+    DBEntry const *m_beg;
+    DBEntry const *m_end;
 
   public:
-    Database(char const *file)
-      : db(file),
-	m_beg(reinterpret_cast<DBEntry*>(db.data())),
-	m_end(m_beg + db.size()/sizeof(DBEntry)),
-	m_ptr(m_beg) {}
-    ~Database() {}
+    DBConstRange(DBEntry const *const  beg, DBEntry const *const  end)
+      : m_beg(beg), m_end(end) {}
+    ~DBConstRange() {}
 
   public:
     size_t         size()  const { return  m_end - m_beg; }
     DBEntry const *begin() const { return  m_beg; }
     DBEntry const *end()   const { return  m_end; }
-    DBEntry *begin() { return  m_beg; }
-    DBEntry *end()   { return  m_end; }
+
+    // The search bounds requires a sorted DBRange.
+    DBEntry const *lub(uint64_t  spec) const;
+    DBEntry const *glb(uint64_t  spec) const;
+  };
+
+  class DBRange : public DBConstRange {
 
   public:
-    DBEntry       *takeCase();
-    void           untakeStaleCases(unsigned  timeout_min);
+    DBRange(DBEntry *const  beg, DBEntry *const  end)
+      : DBConstRange(beg, end) {}
+    ~DBRange() {}
 
-    // These search functions requires the Database to be ordered.
-    DBEntry const *findCase(uint64_t  spec) const;
-    DBEntry       *findCase(uint64_t  spec);
+  public:
+    DBEntry *begin() { return  const_cast<DBEntry*>(DBConstRange::begin()); }
+    DBEntry *end()   { return  const_cast<DBEntry*>(DBConstRange::end()); }
+
+    // The search bounds requires a sorted DBRange.
+    DBEntry *lub(uint64_t  spec) { return  const_cast<DBEntry*>(DBConstRange::lub(spec)); }
+    DBEntry *glb(uint64_t  spec) { return  const_cast<DBEntry*>(DBConstRange::glb(spec)); }
+  };
+
+  class Database : private boost::iostreams::mapped_file, public DBRange {
+
+    DBEntry *m_ptr;
+
+  public:
+    Database(char const *file)
+      : boost::iostreams::mapped_file(file),
+	DBRange(reinterpret_cast<DBEntry*>(boost::iostreams::mapped_file::data()),
+		reinterpret_cast<DBEntry*>(boost::iostreams::mapped_file::data()+
+					   boost::iostreams::mapped_file::size())),
+	m_ptr(DBRange::begin()) {}
+    ~Database() {}
+
+    // Explicit overrides to disambiguate with mapped_file aliases.
+  public:
+    size_t         size()  const { return  DBConstRange::size(); }
+    DBEntry const *begin() const { return  DBConstRange::begin(); }
+    DBEntry const *end()   const { return  DBConstRange::end(); }
+    DBEntry       *begin()       { return  DBRange::begin(); }
+    DBEntry       *end()         { return  DBRange::end(); }
+
+  public:
+    DBEntry *takeCase();
+    void     untakeStaleCases(unsigned  timeout_min);
   };
 }
 #endif

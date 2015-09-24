@@ -2,7 +2,7 @@
 
 #include "../Database.hpp"
 
-using queens::Database;
+using queens::DBConstRange;
 using queens::DBEntry;
 using namespace queens::range;
 
@@ -59,21 +59,26 @@ SPredicate *SPredicate::createInverted(SPredicate const *target) {
 //- class SAddress -----------------------------------------------------------
 SAddress *SAddress::create(uint64_t  spec, unsigned  wild) {
   class RawAddress : public SAddress {
-    uint64_t        m_spec;
-    unsigned const  m_wild;
+    uint64_t const  m_spec;
+    uint64_t const  m_mask;
 
   public:
-    RawAddress(uint64_t  spec, unsigned  wild) : m_spec(spec), m_wild(wild) {}
+    RawAddress(uint64_t  spec, unsigned  wild)
+      : m_spec(spec<<5), m_mask((UINT64_C(1) << 5*(wild+1))-1) {}
     ~RawAddress() {}
 
   public:
-    void makeLower() { m_spec &= ~((1 << 5*m_wild)-1)<<5; }
-    void makeUpper() { m_spec |=  ((1 << 5*m_wild)-1)<<5; }
-    DBEntry const *operator()(Database const &db) const {
-      return  db.findCase(m_spec);
+    DBEntry const *operator()(DBConstRange const &db, AddrType  type) const {
+      switch(type) {
+      case AddrType::LOWER:
+	return  db.lub(m_spec & ~m_mask);
+      case AddrType::UPPER:
+	return  db.glb(m_spec |  m_mask);
+      }
+      return  nullptr;
     }
   };
-  return  new RawAddress(spec<<5, wild);
+  return  new RawAddress(spec, wild);
 }
 
 SAddress *SAddress::createFirst(SPredicate const *p) {
@@ -85,7 +90,7 @@ SAddress *SAddress::createFirst(SPredicate const *p) {
     ~First() {}
 
   public:
-    DBEntry const *operator()(Database const &db) const {
+    DBEntry const *operator()(DBConstRange const &db, AddrType  type) const {
       for(DBEntry const &e : db) {
 	if((*m_pred)(e))  return &e;
       }
@@ -104,7 +109,7 @@ SAddress *SAddress::createLast(SPredicate const *p) {
     ~Last() {}
 
   public:
-    DBEntry const *operator()(Database const &db) const {
+    DBEntry const *operator()(DBConstRange const &db, AddrType  type) const {
       DBEntry const *const  beg = db.begin();
       for(DBEntry const *ptr = db.end(); --ptr >= beg;) {
 	if((*m_pred)(*ptr))  return  ptr;
@@ -118,12 +123,8 @@ SAddress *SAddress::createLast(SPredicate const *p) {
 //- class SRange -------------------------------------------------------------
 SRange::~SRange() {}
 
-Range SRange::resolve(Database const &db) const {
-  DBEntry const *const  beg = (*m_beg)(db);
-  if(m_end.get() == nullptr) {
-    return  Range(beg, ((beg == nullptr) || (beg == db.end()))? beg : beg+1);
-  }
-  DBEntry const *const  end = (*m_end)(db);
-  return  Range(end == nullptr? nullptr : beg == nullptr? db.begin() : beg,
-		end == nullptr? nullptr : end == db.end()? end : end + 1);
+DBConstRange SRange::resolve(DBConstRange const &db) const {
+  DBEntry const *beg = (*m_beg)(db, SAddress::AddrType::LOWER);
+  DBEntry const *end = (*m_end)(db, SAddress::AddrType::UPPER);
+  return  DBConstRange(beg, beg > end? beg : end == db.end()? end : end+1);
 }

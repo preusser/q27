@@ -142,14 +142,12 @@ void RangeParser::buildSpec(uint64_t &spec, unsigned &wild, SVal const &position
 %start range
 %%
 range : addr {
-          m_range = new SRange(static_cast<SAddress const*>($1), nullptr);
+          m_range = new SRange(static_cast<SAddress const*>($1),
+			       static_cast<SAddress const*>($1));
         }
       | addr '-' addr {
- 	  SAddress *const  beg = static_cast<SAddress*>($1);
- 	  SAddress *const  end = static_cast<SAddress*>($3);
-	  beg->makeLower();
-	  end->makeUpper();
-	  m_range = new SRange(beg, end);
+          m_range = new SRange(static_cast<SAddress const*>($1),
+			       static_cast<SAddress const*>($3));
 	}
 
 addr : FIRST {

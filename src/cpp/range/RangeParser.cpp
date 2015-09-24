@@ -330,57 +330,55 @@ void queens::range::RangeParser::parse() {
 case 1: {
 #line 145 "RangeParser.ypp"
 
-          m_range = new SRange(static_cast<SAddress const*>(yystack[yylen - 1]), nullptr);
+          m_range = new SRange(static_cast<SAddress const*>(yystack[yylen - 1]),
+			       static_cast<SAddress const*>(yystack[yylen - 1]));
         
-#line 335 "RangeParser.cpp"
+#line 336 "RangeParser.cpp"
 break;
 }
 case 2: {
-#line 148 "RangeParser.ypp"
+#line 149 "RangeParser.ypp"
 
- 	  SAddress *const  beg = static_cast<SAddress*>(yystack[yylen - 1]);
- 	  SAddress *const  end = static_cast<SAddress*>(yystack[yylen - 3]);
-	  beg->makeLower();
-	  end->makeUpper();
-	  m_range = new SRange(beg, end);
+          m_range = new SRange(static_cast<SAddress const*>(yystack[yylen - 1]),
+			       static_cast<SAddress const*>(yystack[yylen - 3]));
 	
-#line 347 "RangeParser.cpp"
+#line 345 "RangeParser.cpp"
 break;
 }
 case 3: {
-#line 156 "RangeParser.ypp"
+#line 154 "RangeParser.ypp"
 
         yylval = SAddress::createFirst(SPredicate::createTrue());
        
-#line 355 "RangeParser.cpp"
+#line 353 "RangeParser.cpp"
 break;
 }
 case 4: {
-#line 159 "RangeParser.ypp"
+#line 157 "RangeParser.ypp"
 
 	yylval = SAddress::createFirst(static_cast<SPredicate const*>(yystack[yylen - 3]));
        
-#line 363 "RangeParser.cpp"
+#line 361 "RangeParser.cpp"
 break;
 }
 case 5: {
-#line 162 "RangeParser.ypp"
+#line 160 "RangeParser.ypp"
 
 	yylval = SAddress::createLast(SPredicate::createTrue());
        
-#line 371 "RangeParser.cpp"
+#line 369 "RangeParser.cpp"
 break;
 }
 case 6: {
-#line 165 "RangeParser.ypp"
+#line 163 "RangeParser.ypp"
 
 	yylval = SAddress::createLast(static_cast<SPredicate const*>(yystack[yylen - 3]));
        
-#line 379 "RangeParser.cpp"
+#line 377 "RangeParser.cpp"
 break;
 }
 case 7: {
-#line 168 "RangeParser.ypp"
+#line 166 "RangeParser.ypp"
 
          uint64_t  spec = 0L;
 	 unsigned  wild = 0;
@@ -394,39 +392,39 @@ case 7: {
 	 buildSpec(spec, wild, *yystack[yylen - 19]);
 	 yylval = SAddress::create(spec, wild);
        
-#line 397 "RangeParser.cpp"
+#line 395 "RangeParser.cpp"
 break;
 }
 case 8: {
-#line 182 "RangeParser.ypp"
+#line 180 "RangeParser.ypp"
  yylval = SPredicate::createTaken(); 
-#line 403 "RangeParser.cpp"
+#line 401 "RangeParser.cpp"
 break;
 }
 case 9: {
-#line 183 "RangeParser.ypp"
+#line 181 "RangeParser.ypp"
  yylval = SPredicate::createSolved(); 
-#line 409 "RangeParser.cpp"
+#line 407 "RangeParser.cpp"
 break;
 }
 case 10: {
-#line 184 "RangeParser.ypp"
+#line 182 "RangeParser.ypp"
 
 	yylval = SPredicate::createInverted(static_cast<SPredicate const*>(yystack[yylen - 2]));
        
-#line 417 "RangeParser.cpp"
+#line 415 "RangeParser.cpp"
 break;
 }
 case 11: {
-#line 188 "RangeParser.ypp"
+#line 186 "RangeParser.ypp"
  yylval = yystack[yylen - 1]; 
-#line 423 "RangeParser.cpp"
+#line 421 "RangeParser.cpp"
 break;
 }
 case 12: {
-#line 189 "RangeParser.ypp"
+#line 187 "RangeParser.ypp"
  yylval = new SPosition(-1); 
-#line 429 "RangeParser.cpp"
+#line 427 "RangeParser.cpp"
 break;
 }
         }

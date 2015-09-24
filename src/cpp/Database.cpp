@@ -26,9 +26,38 @@
 
 using namespace queens;
 
+DBEntry const *DBConstRange::lub(uint64_t  spec) const {
+  spec &= ~UINT64_C(0x1F); // ignore symmetry and CRC
+  DBEntry const *lo = begin(); if(spec <= lo->spec())  return  lo;
+  DBEntry const *hi = end()-1; if(spec >  hi->spec())  return  end();
+
+  // Invariant: lo->spec() < spec <= hi->spec()
+  while(true) {
+    size_t const  m = (hi-lo)/2;
+    if(m == 0)  return  hi;
+    DBEntry const *const  mid = lo+m;
+    if(spec <= mid->spec())  hi = mid;
+    else                     lo = mid;
+  }
+}
+DBEntry const *DBConstRange::glb(uint64_t  spec) const {
+  spec |= UINT64_C(0x1F); // ignore symmetry and CRC
+  DBEntry const *lo = begin(); if(spec <  lo->spec())  return  nullptr;
+  DBEntry const *hi = end()-1; if(spec >= hi->spec())  return  hi;
+
+  // Invariant: lo->spec() <= spec < hi->spec()
+  while(true) {
+    size_t const  m = (hi-lo)/2;
+    if(m == 0)  return  lo;
+    DBEntry const *const  mid = lo+m;
+    if(spec < mid->spec())  hi = mid;
+    else                    lo = mid;
+  }
+}
+
 DBEntry *Database::takeCase() {
   while(m_ptr->taken()) {
-    if(m_ptr < m_end)  m_ptr++;
+    if(m_ptr < end())  m_ptr++;
     else  return  nullptr;
   }
   m_ptr->take();
@@ -43,29 +72,10 @@ void Database::untakeStaleCases(unsigned  timeout_min) {
     cutoff = ((((((((ptm.tm_year-115)&3 << 4) | (ptm.tm_mon+1)) << 5) | ptm.tm_mday) << 5) |  ptm.tm_hour) << 4) | (ptm.tm_min/4);
   }
 
-  for(DBEntry *ptr = m_ptr; ptr >= m_beg; ptr--) {
+  for(DBEntry *ptr = m_ptr; ptr >= begin(); ptr--) {
     if(ptr->taken() && !ptr->solved() && (ptr->time() < cutoff)) {
       ptr->untake();
       m_ptr = ptr;
     }
   }
-}
-
-DBEntry const *Database::findCase(uint64_t  spec) const {
-  spec |= UINT64_C(0x1F);
-  DBEntry const *lo = m_beg;   if(spec <  lo->spec())  return  nullptr;
-  DBEntry const *hi = m_end-1; if(spec >= hi->spec())  return  hi;
-
-  // Invariant: lo->spec() <= spec < hi->spec()
-  while(true) {
-    size_t const  m = (hi-lo)/2;
-    if(m == 0)  return  lo;
-    DBEntry const *const  mid = lo+m;
-    if(spec < mid->spec())  hi = mid;
-    else                    lo = mid;
-  }
-}
-
-DBEntry *Database::findCase(uint64_t  spec) {
-  return  const_cast<DBEntry*>(static_cast<Database const*>(this)->findCase(spec));
 }

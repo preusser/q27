@@ -4,10 +4,9 @@
 #include <cstdint>
 #include <memory>
 
-namespace queens {
-  class DBEntry;
-  class Database;
+#include "../Database.hpp"
 
+namespace queens {
   namespace range {
 
     // Base Clase for Semantic Values
@@ -52,6 +51,9 @@ namespace queens {
 
     //- Address --------------------------------------------------------------
     class SAddress : public SVal {
+    public:
+      enum class AddrType { LOWER, UPPER };
+
     protected:
       SAddress() {}
     public:
@@ -59,9 +61,7 @@ namespace queens {
 
       //+ Functional Interface
     public:
-      virtual void makeLower() {}
-      virtual void makeUpper() {}
-      virtual DBEntry const *operator()(Database const &db) const = 0;
+      virtual DBEntry const *operator()(DBConstRange const &db, AddrType  type) const = 0;
 
       //+ Static Singletons and Factories
     public:
@@ -71,30 +71,16 @@ namespace queens {
 
     }; // class SAddress
 
-    class Range {
-      DBEntry const *const  m_beg;
-      DBEntry const *const  m_end;
-
-    public:
-      Range(DBEntry const *beg, DBEntry const *end) : m_beg(beg), m_end(end) {}
-      ~Range() {}
-
-    public:
-      DBEntry const *begin() const { return  m_beg; }
-      DBEntry const *end()   const { return  m_end; }
-
-    }; // class Range
-
     class SRange : public SVal {
-      std::unique_ptr<SAddress const>  m_beg;
-      std::unique_ptr<SAddress const>  m_end;
+      SAddress const *m_beg;
+      SAddress const *m_end;
 
     public:
       SRange(SAddress const *beg, SAddress const *end) : m_beg(beg), m_end(end) {}
       ~SRange();
 
     public:
-      Range resolve(Database const &db) const;
+      DBConstRange resolve(DBConstRange const &db) const;
 
     }; // class SRange
 

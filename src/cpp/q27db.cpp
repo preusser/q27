@@ -48,11 +48,12 @@ namespace {
       "\t\t\tslice <output.db> [taken|stale <timeout_min>]\n"
       "\t\t\tuntake\n"
       "\t\t\tmerge <contrib.db> <secondary.db>\n"
+      "\t\t\tprint <range>\n"
 	      << std::endl;
     exit(1);
   }
 
-  int stats(Database const &db) {
+  int stats(DBConstRange const &db) {
     unsigned const  total = db.size();
 
     std::cout << "Scanning " << total << " entries ..." << std::endl;
@@ -135,7 +136,7 @@ namespace {
 
   } // stats()
 
-  int freq(Database const &db) {
+  int freq(DBConstRange const &db) {
     std::map<unsigned, unsigned>  hist;
     for(DBEntry const &e : db) {
       if(e.solved())  hist[e.time()]++;
@@ -161,7 +162,7 @@ namespace {
 
   } // freq()
 
-  int slice(Database const &db, int const  argc, char const *const  argv[]) {
+  int slice(DBConstRange const &db, int const  argc, char const *const  argv[]) {
     if(argc >= 2) {
       std::ofstream   out(argv[0]);
       char const *cmd = argv[1];
@@ -225,7 +226,7 @@ namespace {
 
       for(DBEntry const &e : merge) {
 	if(e.solved()) {
-	  DBEntry *const  target = db.findCase(e.spec());
+	  DBEntry *const  target = db.glb(e.spec());
 	  if((target == nullptr) || (target->spec() != e.spec()))  notfound++;
 	  else { // We have the exact corresponding entry
 
@@ -270,13 +271,21 @@ namespace {
 
   } // merge()
 
-  int print(Database const &db, int const  argc, char const *const  argv[]) {
+  int print(DBConstRange const &db, int const  argc, char const *const  argv[]) {
     if(argc == 1) {
-      std::unique_ptr<SRange>  range(RangeParser::parse(argv[0]));
-      for(DBEntry const &e : range->resolve(db)) {
-	std::cout << e << std::endl;
+      try {
+	std::unique_ptr<SRange>  range(RangeParser::parse(argv[0]));
+	for(DBEntry const &e : range->resolve(db)) {
+	  std::cout << e << std::endl;
+	}
+	return  0;
       }
-      return  0;
+      catch(ParseException const &e) {
+	std::cerr << "Exception parsing the range specification:\n"
+		  << "\t'" << argv[0] << "' @" << e.position() << ": " << e.message()
+		  << std::endl;
+      }
+      return  1;
     }
     usage();
     return  1;
