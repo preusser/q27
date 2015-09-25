@@ -186,6 +186,12 @@ range : addr {
 		      -static_cast<SNumber const&>(*$4)
 		    );
 	}
+      | addr ':' '~' NUMBER {
+          m_range = SRange::createBiSpan(
+	              std::static_pointer_cast<SAddress>($1),
+		      static_cast<SNumber const&>(*$4)
+		    );
+        }
 
 addr : FIRST {
         $$ = SAddress::createFirst(SPredicate::TRUE);

@@ -137,24 +137,24 @@ public:
 
 char const *const  queens::range::RangeParser::yyterms[] = { "EOF", 
 "FIRST", "LAST", "TAKEN", "SOLVED", "NUMBER", "':'", "'+'", "'-'",
-"'('", "')'", "','", "'@'", "'!'", "'*'", };
+"'~'", "'('", "')'", "','", "'@'", "'!'", "'*'", };
 unsigned short const  queens::range::RangeParser::yyintern[] = {
      0,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
-   261,     13,    261,    261,    261,    261,    261,    261,
-     9,     10,     14,      7,     11,      8,    261,    261,
+   261,     14,    261,    261,    261,    261,    261,    261,
+    10,     11,     15,      7,     12,      8,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,      6,    261,    261,    261,    261,    261,
-    12,    261,    261,    261,    261,    261,    261,    261,
+    13,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
-   261,    261,    261,    261,    261,    261,    261,    261,
+   261,    261,    261,    261,    261,    261,      9,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
    261,    261,    261,    261,    261,    261,    261,    261,
@@ -180,29 +180,30 @@ char const *const  queens::range::RangeParser::yyrules[] = {
 "   2: [ 0] range    -> addr ':' addr",
 "   3: [ 1] range    -> addr ':' '+' NUMBER",
 "   4: [ 1] range    -> addr ':' '-' NUMBER",
-"   5: [ 1] addr     -> FIRST",
-"   6: [ 0] addr     -> FIRST '(' pred ')'",
-"   7: [ 1] addr     -> LAST",
-"   8: [ 0] addr     -> LAST '(' pred ')'",
-"   9: [ 0] addr     -> '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')'",
-"  10: [ 1] addr     -> '@' NUMBER",
-"  11: [ 1] addr     -> addr '+' NUMBER",
-"  12: [ 1] addr     -> addr '-' NUMBER",
-"  13: [ 1] pred     -> TAKEN",
-"  14: [ 1] pred     -> SOLVED",
-"  15: [ 0] pred     -> '!' pred",
-"  16: [ 1] pos      -> NUMBER",
-"  17: [ 0] pos      -> '*'",
+"   5: [ 1] range    -> addr ':' '~' NUMBER",
+"   6: [ 1] addr     -> FIRST",
+"   7: [ 0] addr     -> FIRST '(' pred ')'",
+"   8: [ 1] addr     -> LAST",
+"   9: [ 0] addr     -> LAST '(' pred ')'",
+"  10: [ 0] addr     -> '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')' '(' pos ',' pos ')'",
+"  11: [ 1] addr     -> '@' NUMBER",
+"  12: [ 1] addr     -> addr '+' NUMBER",
+"  13: [ 1] addr     -> addr '-' NUMBER",
+"  14: [ 1] pred     -> TAKEN",
+"  15: [ 1] pred     -> SOLVED",
+"  16: [ 0] pred     -> '!' pred",
+"  17: [ 1] pos      -> NUMBER",
+"  18: [ 0] pos      -> '*'",
 };
 #endif
 unsigned short const queens::range::RangeParser::yylength[] = {
-     1,      1,      3,      4,      4,      1,      4,      1,
-     4,     20,      2,      3,      3,      1,      1,      2,
-     1,      1, };
+     1,      1,      3,      4,      4,      4,      1,      4,
+     1,      4,     20,      2,      3,      3,      1,      1,
+     2,      1,      1, };
 unsigned short const queens::range::RangeParser::yylhs   [] = {
-   (unsigned short)~0u,      0,      0,      0,      0,      1,      1,      1,
-     1,      1,      1,      1,      1,      2,      2,      2,
-     3,      3, };
+   (unsigned short)~0u,      0,      0,      0,      0,      0,      1,      1,
+     1,      1,      1,      1,      1,      1,      2,      2,
+     2,      3,      3, };
 
 unsigned short const  queens::range::RangeParser::yygoto  [][4] = {
 {      2,      1,      0,      0,  },
@@ -254,58 +255,62 @@ unsigned short const  queens::range::RangeParser::yygoto  [][4] = {
 {      0,      0,      0,      0,  },
 {      0,      0,      0,      0,  },
 {      0,      0,      0,      0,  },
+{      0,      0,      0,      0,  },
+{      0,      0,      0,      0,  },
 };
 
-signed short const  queens::range::RangeParser::yyaction[][15] = {
-{      0,      3,      4,      0,      0,      0,      0,      0,      0,      5,      0,      0,      6,      0,      0,  },
-{     -1,      0,      0,      0,      0,      0,     39,     40,     41,      0,      0,      0,      0,      0,      0,  },
-{      1,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
-{     -5,      0,      0,      0,      0,      0,     -5,     -5,     -5,     36,      0,      0,      0,      0,      0,  },
-{     -7,      0,      0,      0,      0,      0,     -7,     -7,     -7,     29,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
-{      0,      0,      0,      0,      0,      7,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
-{    -10,      0,      0,      0,      0,      0,    -10,    -10,    -10,      0,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     11,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -16,    -16,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -17,    -17,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     13,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,     14,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     16,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     18,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,     19,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     21,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     23,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,     24,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     26,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     28,      0,      0,      0,      0,  },
-{     -9,      0,      0,      0,      0,      0,     -9,     -9,     -9,      0,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,     31,     32,      0,      0,      0,      0,      0,      0,      0,      0,     33,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     35,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -13,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -14,      0,      0,      0,      0,  },
-{      0,      0,      0,     31,     32,      0,      0,      0,      0,      0,      0,      0,      0,     33,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -15,      0,      0,      0,      0,  },
-{     -8,      0,      0,      0,      0,      0,     -8,     -8,     -8,      0,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,     31,     32,      0,      0,      0,      0,      0,      0,      0,      0,     33,      0,  },
-{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     38,      0,      0,      0,      0,  },
-{     -6,      0,      0,      0,      0,      0,     -6,     -6,     -6,      0,      0,      0,      0,      0,      0,  },
-{      0,      3,      4,      0,      0,      0,      0,     45,     46,      5,      0,      0,      6,      0,      0,  },
-{      0,      0,      0,      0,      0,     43,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,     42,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
-{    -12,      0,      0,      0,      0,      0,    -12,    -12,    -12,      0,      0,      0,      0,      0,      0,  },
-{    -11,      0,      0,      0,      0,      0,    -11,    -11,    -11,      0,      0,      0,      0,      0,      0,  },
-{     -2,      0,      0,      0,      0,      0,      0,     40,     41,      0,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,     48,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
-{      0,      0,      0,      0,      0,     47,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
-{     -4,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
-{     -3,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+signed short const  queens::range::RangeParser::yyaction[][16] = {
+{      0,      3,      4,      0,      0,      0,      0,      0,      0,      0,      5,      0,      0,      6,      0,      0,  },
+{     -1,      0,      0,      0,      0,      0,     39,     40,     41,      0,      0,      0,      0,      0,      0,      0,  },
+{      1,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+{     -6,      0,      0,      0,      0,      0,     -6,     -6,     -6,      0,     36,      0,      0,      0,      0,      0,  },
+{     -8,      0,      0,      0,      0,      0,     -8,     -8,     -8,      0,     29,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
+{      0,      0,      0,      0,      0,      7,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+{    -11,      0,      0,      0,      0,      0,    -11,    -11,    -11,      0,      0,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     11,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -17,    -17,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -18,    -18,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     13,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     14,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     16,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     18,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     19,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     21,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     23,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     24,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     26,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      9,      0,      0,      0,      0,      0,      0,      0,      0,      0,     10,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     28,      0,      0,      0,      0,  },
+{    -10,      0,      0,      0,      0,      0,    -10,    -10,    -10,      0,      0,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,     31,     32,      0,      0,      0,      0,      0,      0,      0,      0,      0,     33,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     35,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -14,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -15,      0,      0,      0,      0,  },
+{      0,      0,      0,     31,     32,      0,      0,      0,      0,      0,      0,      0,      0,      0,     33,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,    -16,      0,      0,      0,      0,  },
+{     -9,      0,      0,      0,      0,      0,     -9,     -9,     -9,      0,      0,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,     31,     32,      0,      0,      0,      0,      0,      0,      0,      0,      0,     33,      0,  },
+{      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,     38,      0,      0,      0,      0,  },
+{     -7,      0,      0,      0,      0,      0,     -7,     -7,     -7,      0,      0,      0,      0,      0,      0,      0,  },
+{      0,      3,      4,      0,      0,      0,      0,     45,     46,     47,      5,      0,      0,      6,      0,      0,  },
+{      0,      0,      0,      0,      0,     43,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,     42,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+{    -13,      0,      0,      0,      0,      0,    -13,    -13,    -13,      0,      0,      0,      0,      0,      0,      0,  },
+{    -12,      0,      0,      0,      0,      0,    -12,    -12,    -12,      0,      0,      0,      0,      0,      0,      0,  },
+{     -2,      0,      0,      0,      0,      0,      0,     40,     41,      0,      0,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,     50,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,     49,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+{      0,      0,      0,      0,      0,     48,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+{     -5,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+{     -4,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
+{     -3,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,      0,  },
 };
 
 void queens::range::RangeParser::parse() {
@@ -330,7 +335,7 @@ void queens::range::RangeParser::parse() {
       if(yyact == 0) {
         std::string                yymsg("Expecting (");
         signed short const *const  yyrow = yyaction[*yystack];
-        for(unsigned  i = 0; i < 15; i++) {
+        for(unsigned  i = 0; i < 16; i++) {
           if(yyrow[i])  yymsg.append(yyterms[i]) += '|';
         }
         *yymsg.rbegin() = ')';
@@ -363,7 +368,7 @@ case 1: {
 		      std::static_pointer_cast<SAddress>(yystack[yylen - 1])
 		    );
         
-#line 366 "RangeParser.cpp"
+#line 371 "RangeParser.cpp"
 break;
 }
 case 2: {
@@ -374,7 +379,7 @@ case 2: {
 		      std::static_pointer_cast<SAddress>(yystack[yylen - 3])
 		    );
 	
-#line 377 "RangeParser.cpp"
+#line 382 "RangeParser.cpp"
 break;
 }
 case 3: {
@@ -385,7 +390,7 @@ case 3: {
 		      static_cast<SNumber const&>(*yystack[yylen - 4])
 		    );
 	
-#line 388 "RangeParser.cpp"
+#line 393 "RangeParser.cpp"
 break;
 }
 case 4: {
@@ -396,43 +401,54 @@ case 4: {
 		      -static_cast<SNumber const&>(*yystack[yylen - 4])
 		    );
 	
-#line 399 "RangeParser.cpp"
+#line 404 "RangeParser.cpp"
 break;
 }
 case 5: {
-#line 191 "RangeParser.ypp"
+#line 190 "RangeParser.ypp"
 
-        yylval = SAddress::createFirst(SPredicate::TRUE);
-       
-#line 407 "RangeParser.cpp"
-break;
-}
-case 6: {
-#line 194 "RangeParser.ypp"
-
-	yylval = SAddress::createFirst(std::static_pointer_cast<SPredicate>(yystack[yylen - 3]));
-       
+          m_range = SRange::createBiSpan(
+	              std::static_pointer_cast<SAddress>(yystack[yylen - 1]),
+		      static_cast<SNumber const&>(*yystack[yylen - 4])
+		    );
+        
 #line 415 "RangeParser.cpp"
 break;
 }
-case 7: {
+case 6: {
 #line 197 "RangeParser.ypp"
 
-	yylval = SAddress::createLast(SPredicate::TRUE);
+        yylval = SAddress::createFirst(SPredicate::TRUE);
        
 #line 423 "RangeParser.cpp"
 break;
 }
-case 8: {
+case 7: {
 #line 200 "RangeParser.ypp"
 
-	yylval = SAddress::createLast(std::static_pointer_cast<SPredicate>(yystack[yylen - 3]));
+	yylval = SAddress::createFirst(std::static_pointer_cast<SPredicate>(yystack[yylen - 3]));
        
 #line 431 "RangeParser.cpp"
 break;
 }
-case 9: {
+case 8: {
 #line 203 "RangeParser.ypp"
+
+	yylval = SAddress::createLast(SPredicate::TRUE);
+       
+#line 439 "RangeParser.cpp"
+break;
+}
+case 9: {
+#line 206 "RangeParser.ypp"
+
+	yylval = SAddress::createLast(std::static_pointer_cast<SPredicate>(yystack[yylen - 3]));
+       
+#line 447 "RangeParser.cpp"
+break;
+}
+case 10: {
+#line 209 "RangeParser.ypp"
 
          uint64_t  spec = 0L;
 	 unsigned  wild = 0;
@@ -446,58 +462,58 @@ case 9: {
 	 buildSpec(spec, wild, *yystack[yylen - 19]);
 	 yylval = SAddress::create(spec, wild);
        
-#line 449 "RangeParser.cpp"
+#line 465 "RangeParser.cpp"
 break;
 }
-case 10: {
-#line 216 "RangeParser.ypp"
+case 11: {
+#line 222 "RangeParser.ypp"
 
          yylval = SAddress::createOffset(SAddress::createFirst(SPredicate::TRUE),
 				     static_cast<SNumber const&>(*yystack[yylen - 2]));
        
-#line 458 "RangeParser.cpp"
+#line 474 "RangeParser.cpp"
 break;
 }
-case 11: {
-#line 220 "RangeParser.ypp"
+case 12: {
+#line 226 "RangeParser.ypp"
 
          yylval = SAddress::createOffset(std::static_pointer_cast<SAddress>(yystack[yylen - 1]),
 		                     static_cast<SNumber const&>(*yystack[yylen - 3]));
        
-#line 467 "RangeParser.cpp"
+#line 483 "RangeParser.cpp"
 break;
 }
-case 12: {
-#line 224 "RangeParser.ypp"
+case 13: {
+#line 230 "RangeParser.ypp"
 
          yylval = SAddress::createOffset(std::static_pointer_cast<SAddress>(yystack[yylen - 1]),
 		                     -static_cast<SNumber const&>(*yystack[yylen - 3]));
        
-#line 476 "RangeParser.cpp"
-break;
-}
-case 13: {
-#line 229 "RangeParser.ypp"
- yylval = SPredicate::TAKEN; 
-#line 482 "RangeParser.cpp"
+#line 492 "RangeParser.cpp"
 break;
 }
 case 14: {
-#line 230 "RangeParser.ypp"
- yylval = SPredicate::SOLVED; 
-#line 488 "RangeParser.cpp"
+#line 235 "RangeParser.ypp"
+ yylval = SPredicate::TAKEN; 
+#line 498 "RangeParser.cpp"
 break;
 }
 case 15: {
-#line 231 "RangeParser.ypp"
-
-	yylval = SPredicate::createInverted(std::static_pointer_cast<SPredicate>(yystack[yylen - 2]));
-       
-#line 496 "RangeParser.cpp"
+#line 236 "RangeParser.ypp"
+ yylval = SPredicate::SOLVED; 
+#line 504 "RangeParser.cpp"
 break;
 }
 case 16: {
-#line 235 "RangeParser.ypp"
+#line 237 "RangeParser.ypp"
+
+	yylval = SPredicate::createInverted(std::static_pointer_cast<SPredicate>(yystack[yylen - 2]));
+       
+#line 512 "RangeParser.cpp"
+break;
+}
+case 17: {
+#line 241 "RangeParser.ypp"
 
         int const  v = static_cast<SNumber const&>(*yystack[yylen - 1]);
 	if((v < 0) || (26 < v)) {
@@ -505,13 +521,13 @@ case 16: {
 	}
         yylval = yystack[yylen - 1];
       
-#line 508 "RangeParser.cpp"
+#line 524 "RangeParser.cpp"
 break;
 }
-case 17: {
-#line 242 "RangeParser.ypp"
+case 18: {
+#line 248 "RangeParser.ypp"
  yylval = std::make_shared<SNumber>(-1); 
-#line 514 "RangeParser.cpp"
+#line 530 "RangeParser.cpp"
 break;
 }
         }

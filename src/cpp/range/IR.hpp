@@ -106,6 +106,7 @@ namespace queens {
     public:
       static std::shared_ptr<SRange> create(std::shared_ptr<SAddress> const &beg, std::shared_ptr<SAddress> const &end);
       static std::shared_ptr<SRange> createSpan(std::shared_ptr<SAddress> const &base, int  span);
+      static std::shared_ptr<SRange> createBiSpan(std::shared_ptr<SAddress> const &base, int  span);
     }; // class SRange
 
   } // namespace queens::range

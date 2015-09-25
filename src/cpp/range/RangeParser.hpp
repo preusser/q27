@@ -66,7 +66,7 @@ static char const    *const  yyrules [];
 
 private:
 static unsigned short const  yygoto  [][4];
-static signed   short const  yyaction[][15];
+static signed   short const  yyaction[][16];
 };
 }}
 #endif

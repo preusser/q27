@@ -202,3 +202,29 @@ std::shared_ptr<SRange> SRange::createSpan(std::shared_ptr<SAddress> const &base
   };
   return  std::make_shared<Span>(base, span);
 }
+std::shared_ptr<SRange> SRange::createBiSpan(std::shared_ptr<SAddress> const &base, int  span) {
+  class BiSpan : public SRange {
+    std::shared_ptr<SAddress> const  m_base;
+    int                       const  m_span;
+
+  public:
+    BiSpan(std::shared_ptr<SAddress> const &base, int  span) : m_base(base), m_span(span) {}
+    ~BiSpan() {}
+
+  public:
+    DBConstRange resolve(DBConstRange const &db) const {
+      DBEntry const *base = (*m_base)(db, SAddress::AddrType::LOWER);
+      DBEntry const *beg, *end;
+
+      if((base == nullptr) || (base == db.end()))  beg = end = base;
+      else {
+	beg = base - m_span;
+	if(beg < db.begin())  beg = db.begin();
+	end = base + m_span + 1;
+	if(end > db.end())  end = db.end();
+      }
+      return  DBConstRange(beg, end);
+    }
+  };
+  return  std::make_shared<BiSpan>(base, span);
+}
