@@ -1,0 +1,14 @@
+*.rpt
+*.done
+*.smsg
+*.summary
+*.jdi
+*.pin
+*.qws
+*.sld
+*.sof
+*.ddb
+*.qdf
+*.txt
+db/
+incremental_db/
