@@ -188,11 +188,11 @@ std::shared_ptr<SRange> SRange::createSpan(std::shared_ptr<SAddress> const &base
       else {
 	if(m_span >= 0) {
 	  beg = base;
-	  end = base + m_span;
+	  end = base + m_span + 1;
 	  if(end > db.end())  end = db.end();
 	}
 	else {
-	  end = base;
+	  end = base + 1;
 	  beg = base + m_span;
 	  if(beg < db.begin())  beg = db.begin();
 	}
