@@ -26,7 +26,7 @@ class RangeParser {
   std::shared_ptr<SRange>  m_range;
 
 //- Life Cycle ---------------------------------------------------------------
-private:
+public:
   RangeParser() {}
   ~RangeParser() {}
 
@@ -41,7 +41,7 @@ private:
 
 //- Usage Interface ----------------------------------------------------------
 public:
-  static std::shared_ptr<SRange> parse(char const *line) throw (ParseException);
+  std::shared_ptr<SRange> parse(char const *line) throw (ParseException);
 
 #line 46 "RangeParser.hpp"
 private:

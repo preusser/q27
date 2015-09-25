@@ -39,7 +39,7 @@ namespace queens {
   std::shared_ptr<SRange>  m_range;
 
 //- Life Cycle ---------------------------------------------------------------
-private:
+public:
   RangeParser() {}
   ~RangeParser() {}
 
@@ -54,7 +54,7 @@ private:
 
 //- Usage Interface ----------------------------------------------------------
 public:
-  static std::shared_ptr<SRange> parse(char const *line) throw (ParseException);
+  std::shared_ptr<SRange> parse(char const *line) throw (ParseException);
 }
 
 %sval std::shared_ptr<SVal>
@@ -132,14 +132,15 @@ unsigned RangeParser::nextToken(YYSVal &sval) {
 
 //- Public Usage Interface ---------------------------------------------------
 std::shared_ptr<SRange> RangeParser::parse(char const *line) throw (ParseException) {
-  RangeParser  p;
   try {
-    p.m_line = line;
-    p.parse();
-    return  p.m_range;
+    std::shared_ptr<SRange>  res;
+    m_line = line;
+    parse();
+    res.swap(m_range);
+    return  res;
   }
   catch(ParseException &e) {
-    e.position(p.m_line - line);
+    e.position(m_line - line);
     throw;
   }
 }

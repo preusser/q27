@@ -257,9 +257,10 @@ namespace {
   int print(DBConstRange const &db, int const  argc, char const *const  argv[]) {
     if(argc > 0) {
       DBConstRange  range = db;
+      RangeParser   parser;
       for(int  i = 0; i < argc; i++) {
 	try {
-	  range = RangeParser::parse(argv[i])->resolve(range);
+	  range = parser.parse(argv[i])->resolve(range);
 	}
 	catch(ParseException const &e) {
 	  std::cerr << "Exception parsing the range specification:\n"
