@@ -1,17 +1,17 @@
 # -------------------------------------------------------------------------- #
 #
 # Copyright (C) 1991-2011 Altera Corporation
-# Your use of Altera Corporation's design tools, logic functions 
-# and other software and tools, and its AMPP partner logic 
-# functions, and any output files from any of the foregoing 
-# (including device programming or simulation files), and any 
-# associated documentation or information are expressly subject 
-# to the terms and conditions of the Altera Program License 
-# Subscription Agreement, Altera MegaCore Function License 
-# Agreement, or other applicable license agreement, including, 
-# without limitation, that your use is for the sole purpose of 
-# programming logic devices manufactured by Altera and sold by 
-# Altera or its authorized distributors.  Please refer to the 
+# Your use of Altera Corporation's design tools, logic functions
+# and other software and tools, and its AMPP partner logic
+# functions, and any output files from any of the foregoing
+# (including device programming or simulation files), and any
+# associated documentation or information are expressly subject
+# to the terms and conditions of the Altera Program License
+# Subscription Agreement, Altera MegaCore Function License
+# Agreement, or other applicable license agreement, including,
+# without limitation, that your use is for the sole purpose of
+# programming logic devices manufactured by Altera and sold by
+# Altera or its authorized distributors.  Please refer to the
 # applicable agreement for further details.
 #
 # -------------------------------------------------------------------------- #
@@ -81,7 +81,7 @@ set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
 set_global_assignment -name SEED 7
 set_global_assignment -name ROUTER_TIMING_OPTIMIZATION_LEVEL MAXIMUM
 set_global_assignment -name PLACEMENT_EFFORT_MULTIPLIER 2.0
-set_global_assignment -name ROUTER_EFFORT_MULTIPLIER 2.0   
+set_global_assignment -name ROUTER_EFFORT_MULTIPLIER 2.0
 set_global_assignment -name ALLOW_ANY_RAM_SIZE_FOR_RECOGNITION ON
 set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name OPTIMIZATION_MODE "HIGH PERFORMANCE EFFORT"
@@ -1387,25 +1387,25 @@ set_instance_assignment -name IO_STANDARD "2.5 V" -to UART_TXD
 # End of pin assignments by Terasic System Builder
 #============================================================
 
-set_global_assignment -name VHDL_FILE ../../PoC/common/my_config_DE4.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/common/my_project.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/common/utils.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/common/strings.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/common/vectors.vhdl -library PoC 
+set_global_assignment -name VHDL_FILE ../../PoC/common/my_config_DE4.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/common/my_project.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/common/utils.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/common/strings.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/common/vectors.vhdl -library PoC
 set_global_assignment -name VHDL_FILE ../../PoC/common/config.vhdl -library PoC
-set_global_assignment -name VHDL_FILE ../../PoC/common/physical.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/common/components.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/arith/arith_counter_free.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/ocram/ocram.pkg.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/ocram/ocram_sdp.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/fifo/fifo.pkg.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/fifo/fifo_glue.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/fifo/fifo_cc_got.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/fifo/fifo_cc_got_tempput.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/uart/uart.pkg.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/uart/uart_rx.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/uart/uart_tx.vhdl -library PoC 
-set_global_assignment -name VHDL_FILE ../../PoC/sync/sync.pkg.vhdl -library PoC 
+set_global_assignment -name VHDL_FILE ../../PoC/common/physical.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/common/components.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/arith/arith_counter_free.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/ocram/ocram.pkg.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/ocram/ocram_sdp.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/fifo/fifo.pkg.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/fifo/fifo_glue.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/fifo/fifo_cc_got.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/fifo/fifo_cc_got_tempput.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/uart/uart.pkg.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/uart/uart_rx.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/uart/uart_tx.vhdl -library PoC
+set_global_assignment -name VHDL_FILE ../../PoC/sync/sync.pkg.vhdl -library PoC
 set_global_assignment -name VHDL_FILE ../../PoC/sync/sync_Bits.vhdl -library PoC
 set_global_assignment -name VHDL_FILE ../../queens/unframe.vhdl
 set_global_assignment -name VHDL_FILE ../../queens/enframe.vhdl
