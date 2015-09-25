@@ -27,4 +27,4 @@ DATE = "16:07:05  September 21, 2015"
 
 # Revisions
 
-PROJECT_REVISION = "DE4_queens_uart"
+PROJECT_REVISION = "de4_queens_uart"

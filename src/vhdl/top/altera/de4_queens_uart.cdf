@@ -4,7 +4,7 @@ JedecChain;
 	DefaultMfr(6E);
 
 	P ActionCode(Cfg)
-		Device PartName(EP4SGX230KF40) Path("") File("DE4_queens_uart.sof") MfrSpec(OpMask(1));
+		Device PartName(EP4SGX230KF40) Path("") File("de4_queens_uart.sof") MfrSpec(OpMask(1));
 
 ChainEnd;
 

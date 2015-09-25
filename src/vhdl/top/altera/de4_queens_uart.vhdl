@@ -31,7 +31,7 @@ use IEEE.std_logic_1164.all;
 library PoC;
 use PoC.physical.all;
 
-entity DE4_queens_uart is
+entity de4_queens_uart is
   generic (
     N : positive := 27;
     L : positive :=  2;
@@ -58,7 +58,7 @@ entity DE4_queens_uart is
 
     fan_ctrl : out std_logic
   );
-end DE4_queens_uart;
+end de4_queens_uart;
 
 
 library IEEE;

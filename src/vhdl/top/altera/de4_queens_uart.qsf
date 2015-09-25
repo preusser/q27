@@ -35,7 +35,7 @@
 #
 # -------------------------------------------------------------------------- #
 
-set_global_assignment -name TOP_LEVEL_ENTITY DE4_queens_uart
+set_global_assignment -name TOP_LEVEL_ENTITY de4_queens_uart
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION "9.1 SP1"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "21:20:12  FEBRUARY 25, 2010"
 set_global_assignment -name LAST_QUARTUS_VERSION 15.0.2
@@ -1415,8 +1415,8 @@ set_global_assignment -name VHDL_FILE ../../queens/expand_blocking.vhdl
 set_global_assignment -name VHDL_FILE ../../queens/queens_slice.vhdl
 set_global_assignment -name VHDL_FILE ../../queens/queens_uart.vhdl
 set_global_assignment -name VHDL_FILE ../../queens/arbit_forward.vhdl
-set_global_assignment -name VHDL_FILE DE4_queens_uart.vhdl
-set_global_assignment -name SDC_FILE DE4_queens_uart.sdc
+set_global_assignment -name VHDL_FILE de4_queens_uart.vhdl
+set_global_assignment -name SDC_FILE de4_queens_uart.sdc
 
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
