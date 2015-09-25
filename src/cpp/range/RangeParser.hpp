@@ -52,7 +52,7 @@ enum {
   LAST = 257,
   TAKEN = 258,
   SOLVED = 259,
-  POSITION = 260,
+  NUMBER = 260,
 };
 private:
 enum { YYINTERN = 261 };
@@ -66,7 +66,7 @@ static char const    *const  yyrules [];
 
 private:
 static unsigned short const  yygoto  [][4];
-static signed   short const  yyaction[][12];
+static signed   short const  yyaction[][15];
 };
 }}
 #endif

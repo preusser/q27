@@ -26,20 +26,20 @@ using queens::DBConstRange;
 using queens::DBEntry;
 using namespace queens::range;
 
-SPosition::~SPosition() {}
+SNumber::~SNumber() {}
  
 //- class SPredicate ---------------------------------------------------------
-class : public SPredicate {
+static class : public SPredicate {
   bool operator()(DBEntry const &e) const { return  true; }
 } PRED_TRUE;
 std::shared_ptr<SPredicate> const  SPredicate::TRUE(&PRED_TRUE, [](void*){});
 
-class : public SPredicate {
+static class : public SPredicate {
   bool operator()(DBEntry const &e) const { return  e.taken() && !e.solved(); }
 } PRED_TAKEN;
 std::shared_ptr<SPredicate> const  SPredicate::TAKEN(&PRED_TAKEN, [](void*){});
 
-class : public SPredicate {
+static class : public SPredicate {
   bool operator()(DBEntry const &e) const { return  e.solved(); }
 } PRED_SOLVED;
 std::shared_ptr<SPredicate> const  SPredicate::SOLVED(&PRED_SOLVED, [](void*){});
@@ -124,11 +124,81 @@ std::shared_ptr<SAddress> SAddress::createLast(std::shared_ptr<SPredicate> const
   return  std::make_shared<Last>(p);
 }
 
-//- class SRange -------------------------------------------------------------
-SRange::~SRange() {}
+std::shared_ptr<SAddress> SAddress::createOffset(std::shared_ptr<SAddress> const &base, int  ofs) {
+  class Offset : public SAddress {
+    std::shared_ptr<SAddress const>  const  m_base;
+    int                              const  m_offs;
 
-DBConstRange SRange::resolve(DBConstRange const &db) const {
-  DBEntry const *beg = (*m_beg)(db, SAddress::AddrType::LOWER);
-  DBEntry const *end = (*m_end)(db, SAddress::AddrType::UPPER);
-  return  DBConstRange(beg, (beg > end)||(end == nullptr)? beg : end == db.end()? end : end+1);
+  public:
+    Offset(std::shared_ptr<SAddress const> const &base, int  offs) : m_base(base), m_offs(offs) {}
+    ~Offset() {}
+
+  public:
+    DBEntry const *operator()(DBConstRange const &db, AddrType  type) const {
+      DBEntry const *base = (*m_base)(db, type);
+      if((base != nullptr) && (base != db.end())) {
+	if(m_offs > 0) {
+	  if(base + m_offs > db.end())  return  db.end();
+	}
+	else {
+	  if(base + m_offs < db.begin())  return  nullptr;
+	}
+	base += m_offs;
+      }
+      return  base;
+    }
+  };
+  return  ofs == 0? base : std::make_shared<Offset>(base, ofs);
+}
+
+//- class SRange -------------------------------------------------------------
+std::shared_ptr<SRange> SRange::create(std::shared_ptr<SAddress> const &beg, std::shared_ptr<SAddress> const &end) {
+  class Range : public SRange {
+    std::shared_ptr<SAddress> const  m_beg;
+    std::shared_ptr<SAddress> const  m_end;
+
+  public:
+    Range(std::shared_ptr<SAddress> const &beg, std::shared_ptr<SAddress> const &end) : m_beg(beg), m_end(end) {}
+    ~Range() {}
+
+  public:
+    DBConstRange resolve(DBConstRange const &db) const {
+      DBEntry const *beg = (*m_beg)(db, SAddress::AddrType::LOWER);
+      DBEntry const *end = (*m_end)(db, SAddress::AddrType::UPPER);
+      return  DBConstRange(beg, (beg > end)||(end == nullptr)? beg : end == db.end()? end : end+1);
+    }
+  };
+  return  std::make_shared<Range>(beg, end);
+}
+std::shared_ptr<SRange> SRange::createSpan(std::shared_ptr<SAddress> const &base, int  span) {
+  class Span : public SRange {
+    std::shared_ptr<SAddress> const  m_base;
+    int                       const  m_span;
+
+  public:
+    Span(std::shared_ptr<SAddress> const &base, int  span) : m_base(base), m_span(span) {}
+    ~Span() {}
+
+  public:
+    DBConstRange resolve(DBConstRange const &db) const {
+      DBEntry const *base = (*m_base)(db, m_span >= 0? SAddress::AddrType::LOWER : SAddress::AddrType::UPPER);
+      DBEntry const *beg, *end;
+
+      if((base == nullptr) || (base == db.end()))  beg = end = base;
+      else {
+	if(m_span >= 0) {
+	  beg = base;
+	  end = base + m_span;
+	  if(end > db.end())  end = db.end();
+	}
+	else {
+	  end = base;
+	  beg = base + m_span;
+	  if(beg < db.begin())  beg = db.begin();
+	}
+      }
+      return  DBConstRange(beg, end);
+    }
+  };
+  return  std::make_shared<Span>(base, span);
 }

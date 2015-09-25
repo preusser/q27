@@ -37,13 +37,13 @@ namespace queens {
       virtual ~SVal() {}
     };
 
-    //- Position -------------------------------------------------------------
-    class SPosition : public SVal {
+    //- Number ---------------------------------------------------------------
+    class SNumber : public SVal {
       int const  m_pos;
 
     public:
-      SPosition(int const  pos) : m_pos(pos) {}
-      ~SPosition();
+      SNumber(int const  pos) : m_pos(pos) {}
+      ~SNumber();
 
     public:
       operator int() const { return  m_pos; }
@@ -89,20 +89,23 @@ namespace queens {
       static std::shared_ptr<SAddress> create(uint64_t  spec, unsigned  wild);
       static std::shared_ptr<SAddress> createFirst(std::shared_ptr<SPredicate> const &p);
       static std::shared_ptr<SAddress> createLast (std::shared_ptr<SPredicate> const &p);
+      static std::shared_ptr<SAddress> createOffset(std::shared_ptr<SAddress> const &base, int  ofs);
 
     }; // class SAddress
 
     class SRange : public SVal {
-      std::shared_ptr<SAddress>  m_beg;
-      std::shared_ptr<SAddress>  m_end;
+    protected:
+      SRange() {}
+    public:
+      ~SRange() {}
 
     public:
-      SRange(std::shared_ptr<SAddress> const &beg, std::shared_ptr<SAddress> const &end) : m_beg(beg), m_end(end) {}
-      ~SRange();
+      virtual DBConstRange resolve(DBConstRange const &db) const = 0;
 
+      //+ Static Factories
     public:
-      DBConstRange resolve(DBConstRange const &db) const;
-
+      static std::shared_ptr<SRange> create(std::shared_ptr<SAddress> const &beg, std::shared_ptr<SAddress> const &end);
+      static std::shared_ptr<SRange> createSpan(std::shared_ptr<SAddress> const &base, int  span);
     }; // class SRange
 
   } // namespace queens::range

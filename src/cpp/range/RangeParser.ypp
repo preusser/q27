@@ -116,8 +116,8 @@ unsigned RangeParser::nextToken(YYSVal &sval) {
       char *end;
       int  const  val = (int)strtol(m_line, &end, 0);
       m_line = end;
-      sval = std::make_shared<SPosition>(val < 0? 0 : val > 26? 26 : val);
-      return  POSITION;
+      sval = std::make_shared<SNumber>(val);
+      return  NUMBER;
     }
     m_line++;
 
@@ -146,7 +146,7 @@ std::shared_ptr<SRange> RangeParser::parse(char const *line) throw (ParseExcepti
 
 
 void RangeParser::buildSpec(uint64_t &spec, unsigned &wild, SVal const &position) {
-  int const  pos = static_cast<SPosition const&>(position);
+  int const  pos = static_cast<SNumber const&>(position);
   spec <<= 5;
   if(pos < 0)  wild++;
   else {
@@ -158,19 +158,31 @@ void RangeParser::buildSpec(uint64_t &spec, unsigned &wild, SVal const &position
 } // impl
 
 %%
-%token FIRST LAST TAKEN SOLVED POSITION
+%token FIRST LAST TAKEN SOLVED NUMBER
 %start range
 %%
 range : addr {
-          m_range = std::make_shared<SRange>(
+          m_range = SRange::create(
 	              std::static_pointer_cast<SAddress>($1),
 		      std::static_pointer_cast<SAddress>($1)
 		    );
         }
-      | addr '-' addr {
-          m_range = std::make_shared<SRange>(
+      | addr ':' addr {
+          m_range = SRange::create(
 	              std::static_pointer_cast<SAddress>($1),
 		      std::static_pointer_cast<SAddress>($3)
+		    );
+	}
+      | addr ':' '+' NUMBER {
+          m_range = SRange::createSpan(
+	              std::static_pointer_cast<SAddress>($1),
+		      static_cast<SNumber const&>(*$4)
+		    );
+	}
+      | addr ':' '-' NUMBER {
+          m_range = SRange::createSpan(
+	              std::static_pointer_cast<SAddress>($1),
+		      -static_cast<SNumber const&>(*$4)
 		    );
 	}
 
@@ -199,6 +211,18 @@ addr : FIRST {
 	 buildSpec(spec, wild, *$19);
 	 $$ = SAddress::create(spec, wild);
        }
+     | '@' NUMBER {
+         $$ = SAddress::createOffset(SAddress::createFirst(SPredicate::TRUE),
+				     static_cast<SNumber const&>(*$2));
+       }
+     | addr '+' NUMBER {
+         $$ = SAddress::createOffset(std::static_pointer_cast<SAddress>($1),
+		                     static_cast<SNumber const&>(*$3));
+       }
+     | addr '-' NUMBER {
+         $$ = SAddress::createOffset(std::static_pointer_cast<SAddress>($1),
+		                     -static_cast<SNumber const&>(*$3));
+       }
 
 pred : TAKEN  { $$ = SPredicate::TAKEN; }
      | SOLVED { $$ = SPredicate::SOLVED; }
@@ -206,5 +230,11 @@ pred : TAKEN  { $$ = SPredicate::TAKEN; }
 	$$ = SPredicate::createInverted(std::static_pointer_cast<SPredicate>($2));
        }
 
-pos : POSITION { $$ = $1; }
-    | '*' { $$ = std::make_shared<SPosition>(-1); }
+pos : NUMBER {
+        int const  v = static_cast<SNumber const&>(*$1);
+	if((v < 0) || (26 < v)) {
+	  error("Absolute position must be in the range [0, 27)");
+	}
+        $$ = $1;
+      }
+    | '*' { $$ = std::make_shared<SNumber>(-1); }
