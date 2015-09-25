@@ -36,21 +36,27 @@ under the terms of the Apache 2.0 license.
 Q27 demonstrates the tremendous power of compute accelerators provided through
 FPGA resources.
 
-1. As the design virtually scales arbitrarily, it can be used:
+1. **Training**: As the design virtually scales arbitrarily, it can be used:
   - to practice the performance tuning of large circuits cramped on
     filled FPGA devices, and
   - to practice trading off size (more solver slices) against
     clock speed (performance of a single solver).
 
-2. As the problem is heavily compute- rather than communication-bound, further
-   optimization potential may be explored in:
+2. **Engineering**: As the problem is heavily compute- rather than
+   communication-bound, further optimization potential may be explored in:
   - moving the solver communication from the compute clock domain into the
     slow clock domain (which is currently only used for system services such
     as the fan control), and
   - using independent regional clock resources for subsets of the solver
     slices.
 
-3. Top our own [world record](http://queens.inf.tu-dresden.de/)
+3. **Benchmarking**: Being able to tune the design size at a relatively fine
+   granularity establishes a case for evaluating the resource balance of a
+   device. For instance, it can be determined if the further growth of a
+   design fails on routing or on logic resources or how fast the routing
+   performance drops as the device is being cramped.
+
+4. *Vanity*: Top our own [world record](http://queens.inf.tu-dresden.de/)
    from 2009 obtained by computing
    **Q(26)=22.317.699.616.364.044** using a similar distributed FPGA
    infrastructure.
