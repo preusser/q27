@@ -12,6 +12,8 @@ example of enumerating and couting all the valid solutions of the
 hardware or even to **donate devices**, please contact
 thomas.preusser@tu-dresden.de.
 
+Have a look at the
+[life computation status](https://palios.inf.tu-dresden.de/q27status.php)!
 
 Table of Contents
 -----------------
