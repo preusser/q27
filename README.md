@@ -13,7 +13,7 @@ hardware or even to **donate devices**, please contact
 thomas.preusser@tu-dresden.de.
 
 Have a look at the
-[life computation status](https://palios.inf.tu-dresden.de/q27status.php)!
+[**life computation status**](https://palios.inf.tu-dresden.de/q27status.php)!
 
 Table of Contents
 -----------------
