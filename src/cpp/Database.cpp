@@ -60,28 +60,3 @@ DBEntry const *DBConstRange::glb(uint64_t  spec) const {
     else                    lo = mid;
   }
 }
-
-DBEntry *Database::takeCase() {
-  while(m_ptr->taken()) {
-    if(m_ptr < end())  m_ptr++;
-    else  return  nullptr;
-  }
-  m_ptr->take();
-  return  m_ptr++;
-}
-
-void Database::untakeStaleCases(unsigned  timeout_min) {
-  unsigned  cutoff; {
-    struct tm  ptm;
-    time_t  rawtime = time(NULL) - 60*timeout_min;
-    gmtime_r(&rawtime, &ptm);
-    cutoff = ((((((((ptm.tm_year-115)&3 << 4) | (ptm.tm_mon+1)) << 5) | ptm.tm_mday) << 5) |  ptm.tm_hour) << 4) | (ptm.tm_min/4);
-  }
-
-  for(DBEntry *ptr = m_ptr; ptr >= begin(); ptr--) {
-    if(ptr->taken() && !ptr->solved() && (ptr->time() < cutoff)) {
-      ptr->untake();
-      m_ptr = ptr;
-    }
-  }
-}

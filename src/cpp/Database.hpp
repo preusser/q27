@@ -54,38 +54,32 @@ namespace queens {
     ~DBRange() {}
 
   public:
-    DBEntry *begin() { return  const_cast<DBEntry*>(DBConstRange::begin()); }
-    DBEntry *end()   { return  const_cast<DBEntry*>(DBConstRange::end()); }
+    DBEntry *begin() const { return  const_cast<DBEntry*>(DBConstRange::begin()); }
+    DBEntry *end()   const { return  const_cast<DBEntry*>(DBConstRange::end()); }
 
     // The search bounds requires a sorted DBRange.
     DBEntry *lub(uint64_t  spec) { return  const_cast<DBEntry*>(DBConstRange::lub(spec)); }
     DBEntry *glb(uint64_t  spec) { return  const_cast<DBEntry*>(DBConstRange::glb(spec)); }
   };
 
-  class Database : private boost::iostreams::mapped_file, public DBRange {
-
-    DBEntry *m_ptr;
-
+  class Database : private boost::iostreams::mapped_file {
   public:
-    Database(char const *file)
-      : boost::iostreams::mapped_file(file),
-	DBRange(reinterpret_cast<DBEntry*>(boost::iostreams::mapped_file::data()),
-		reinterpret_cast<DBEntry*>(boost::iostreams::mapped_file::data()+
-					   boost::iostreams::mapped_file::size())),
-	m_ptr(DBRange::begin()) {}
+    Database(char const *file, boost::iostreams::mapped_file::mapmode  mode)
+      : boost::iostreams::mapped_file(file, mode) {}
     ~Database() {}
 
-    // Explicit overrides to disambiguate with mapped_file aliases.
   public:
-    size_t         size()  const { return  DBConstRange::size(); }
-    DBEntry const *begin() const { return  DBConstRange::begin(); }
-    DBEntry const *end()   const { return  DBConstRange::end(); }
-    DBEntry       *begin()       { return  DBRange::begin(); }
-    DBEntry       *end()         { return  DBRange::end(); }
-
-  public:
-    DBEntry *takeCase();
-    void     untakeStaleCases(unsigned  timeout_min);
+    size_t size() const {
+      return  boost::iostreams::mapped_file::size()/sizeof(DBEntry);
+    }
+    DBConstRange roRange() const {
+      DBEntry const *const  beg = reinterpret_cast<DBEntry const*>(boost::iostreams::mapped_file::const_data());
+      return DBConstRange(beg, beg+size());
+    }
+    DBRange rwRange() {
+      DBEntry *const  beg = reinterpret_cast<DBEntry*>(boost::iostreams::mapped_file::data());
+      return  DBRange(beg, beg == nullptr? nullptr : beg+size());
+    }
   };
 }
 #endif

@@ -49,8 +49,9 @@ namespace {
     exit(1);
   }
 
-  int stats(DBConstRange const &db) {
-    unsigned const  total = db.size();
+  int stats(Database &dbx, int const  argc, char const *const  argv[]) {
+    DBConstRange const  db(dbx.roRange());
+    unsigned     const  total = db.size();
 
     std::cout << "Scanning " << total << " entries ..." << std::endl;
 
@@ -119,7 +120,8 @@ namespace {
 
   } // stats()
 
-  int freq(DBConstRange const &db) {
+  int freq(Database &dbx, int const  argc, char const *const  argv[]) {
+    DBConstRange const  db(dbx.roRange());
     std::map<unsigned, unsigned>  hist;
     for(DBEntry const &e : db) {
       if(e.solved())  hist[e.time()]++;
@@ -145,7 +147,8 @@ namespace {
 
   } // freq()
 
-  int slice(DBConstRange const &db, int const  argc, char const *const  argv[]) {
+  int slice(Database &dbx, int const  argc, char const *const  argv[]) {
+    DBConstRange const  db(dbx.roRange());
     if(argc >= 2) {
       std::ofstream   out(argv[0]);
       char const *cmd = argv[1];
@@ -183,7 +186,8 @@ namespace {
     return  1;
   }
 
-  int untake(Database &db) {
+  int untake(Database &dbx, int const  argc, char const *const  argv[]) {
+    DBRange  db(dbx.rwRange());
     uint64_t  cnt = 0L;
     for(DBEntry &e : db) {
       if(e.taken() && !e.solved()) {
@@ -196,10 +200,12 @@ namespace {
 
   }  // untake()
 
-  int merge(Database &db, int const  argc, char const *const  argv[]) {
+  int merge(Database &dbx, int const  argc, char const *const  argv[]) {
+    DBRange  db(dbx.rwRange());
     if(argc == 2) {
-      Database const  merge(argv[0]);
-      std::ofstream   dups (argv[1], std::ofstream::out|std::ofstream::app);
+      Database     const  mergex(argv[0], boost::iostreams::mapped_file::readonly);
+      DBConstRange const  merge (mergex.roRange());
+      std::ofstream       dups  (argv[1], std::ofstream::out|std::ofstream::app);
 
       unsigned  merged    = 0;
       unsigned  identical = 0;
@@ -254,27 +260,32 @@ namespace {
 
   } // merge()
 
-  int print(DBConstRange const &db, int const  argc, char const *const  argv[]) {
+  int print(Database &dbx, int const  argc, char const *const  argv[]) {
     if(argc > 0) {
-      DBConstRange  range = db;
-      RangeParser   parser;
-      for(int  i = 0; i < argc; i++) {
-	try {
-	  range = parser.parse(argv[i])->resolve(range);
-	}
-	catch(ParseException const &e) {
-	  std::cerr << "Exception parsing the range specification:\n"
-		    << "\t'" << argv[0] << "' @" << e.position() << ": " << e.message()
-		    << std::endl;
-	  return  1;
+      DBConstRange         range(dbx.roRange());
+      DBEntry const *const beg = range.begin();
+
+      { // Parse range restictions
+	RangeParser  parser;
+	for(int  i = 0; i < argc; i++) {
+	  try {
+	    range = parser.parse(argv[i])->resolve(range);
+	  }
+	  catch(ParseException const &e) {
+	    std::cerr << "Exception parsing the range specification:\n"
+		      << "\t'" << argv[0] << "' @" << e.position() << ": " << e.message()
+		      << std::endl;
+	    return  1;
+	  }
 	}
       }
-      {
+      { // Output Count
 	unsigned const  n = range.size();
 	std::cout << n << " Entr" << (n==1? "y" : "ies") << std::endl;
       }
+      // Output Entries
       for(DBEntry const &e : range) {
-	std::cout << '@' << std::setw(10) << (&e-db.begin()) << ": " << e << std::endl;
+	std::cout << '@' << std::setw(10) << (&e-beg) << ": " << e << std::endl;
       }
       return  0;
     }
@@ -283,23 +294,33 @@ namespace {
 
   } // print()
 
+  struct {
+    char const *cmd;
+    int(*fct)(Database&, int, char const*const*);
+    boost::iostreams::mapped_file::mapmode  mode;
+  } const  COMMANDS[] = {
+    {"freq",   freq,   boost::iostreams::mapped_file::readonly},
+    {"print",  print,  boost::iostreams::mapped_file::readonly},
+    {"slice",  slice,  boost::iostreams::mapped_file::readonly},
+    {"stats",  stats,  boost::iostreams::mapped_file::readonly},
+    {"untake", untake, boost::iostreams::mapped_file::readwrite},
+    {"merge",  merge,  boost::iostreams::mapped_file::readwrite}
+  };
+
 } // anonymous namespace
 
 int main(int const  argc, char const *const  argv[]) {
   prog = *argv;
   if(argc >= 3) {
-    Database           db(argv[1]);
     char const *const  cmd = argv[2];
 
-    if     (strcmp(cmd, "stats" ) == 0)  return  stats(db);
-    else if(strcmp(cmd, "freq"  ) == 0)  return  freq(db);
-    else if(strcmp(cmd, "slice" ) == 0)  return  slice(db, argc-3, argv+3);
-    else if(strcmp(cmd, "untake") == 0)  return  untake(db);
-    else if(strcmp(cmd, "merge" ) == 0)  return  merge(db, argc-3, argv+3);
-    else if(strcmp(cmd, "print" ) == 0)  return  print(db, argc-3, argv+3);
-    else {
-      std::cerr << "Unknown command: " << cmd << "\n\n";
+    for(auto const &c : COMMANDS) {
+      if(strcmp(cmd, c.cmd) == 0) {
+	Database  db(argv[1], c.mode);
+	return  c.fct(db, argc-3, argv+3);
+      }
     }
+    std::cerr << "Unknown command: " << cmd << "\n\n";
   }
   usage();
   return  1;
