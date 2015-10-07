@@ -137,7 +137,7 @@ namespace {
       if((k>>9) != date) {
 	date = k >> 9;
 	std::cout << '\t' << 2015+(date>>9) << '-'
-		  << std::setw(2) << 1+(0xF&(date>>5)) << '-'
+		  << std::setw(2) << (0xF&(date>>5)) << '-'
 		  << std::setw(2) << (date & 0x1F);
       }
       std::cout << '\n';
