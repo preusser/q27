@@ -18,19 +18,3 @@ NET "leds<5>"  LOC = "N12" | IOSTANDARD = LVCMOS33 ;
 NET "leds<6>"  LOC = "P12" | IOSTANDARD = LVCMOS33 ;
 NET "leds<7>"  LOC = "P11" | IOSTANDARD = LVCMOS33 ;
 NET "leds<*>"  TIG ;
-
-NET "seg7_an<0>"  LOC = "D14" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_an<1>"  LOC = "G14" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_an<2>"  LOC = "F14" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_an<3>"  LOC = "E13" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_an<*>"  TIG ;
-
-NET "seg7_sg<0>"  LOC = "N16" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_sg<1>"  LOC = "F13" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_sg<2>"  LOC = "R16" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_sg<3>"  LOC = "P15" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_sg<4>"  LOC = "N15" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_sg<5>"  LOC = "G13" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_sg<6>"  LOC = "E14" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_sg<7>"  LOC = "P16" | IOSTANDARD = LVCMOS33 ;
-NET "seg7_sg<*>"  TIG ;

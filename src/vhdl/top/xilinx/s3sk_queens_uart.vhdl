@@ -29,11 +29,11 @@ entity s3sk_queens_uart is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 9;
+    SOLVERS      : positive := 8;
     COUNT_CYCLES : boolean  := false;
 
     CLK_FREQ : positive := 50000000;
-    CLK_MUL  : positive := 23;
+    CLK_MUL  : positive := 22;
     CLK_DIV  : positive := 13;
 
     BAUDRATE : positive                     := 115200;
@@ -45,9 +45,6 @@ entity s3sk_queens_uart is
 
     rx : in  std_logic;
     tx : out std_logic;
-
-    seg7_sg : out std_logic_vector(7 downto 0);
-    seg7_an : out std_logic_vector(3 downto 0);
 
     leds : out std_logic_vector(7 downto 0)
   );
@@ -67,7 +64,6 @@ architecture rtl of s3sk_queens_uart is
   signal rst : std_logic;
 
   -- Solver Status
-  signal snap : std_logic_vector(3 downto 0);
   signal avail : std_logic;
 
 begin
@@ -149,36 +145,11 @@ begin
       rst   => rst,
       rx    => rx,
       tx    => tx,
-      snap  => snap,
       avail => avail
     );
 
   ----------------------------------------------------------------------------
   -- Basic Status Output
-  with snap select seg7_sg(6 downto 0) <=
-    "0000001" when "0000",
-    "1001111" when "0001",
-    "0010010" when "0010",
-    "0000110" when "0011",
-
-    "1001100" when "0100",
-    "0100100" when "0101",
-    "0100000" when "0110",
-    "0001111" when "0111",
-
-    "0000000" when "1000",
-    "0000100" when "1001",
-    "0001000" when "1010",
-    "1100000" when "1011",
-
-    "0110001" when "1100",
-    "1000010" when "1101",
-    "0110000" when "1110",
-    "0110000" when "1111",
-    (others => 'X') when others;
-
-  seg7_sg(7) <= avail;
-  seg7_an    <= x"E";
-  leds       <= std_logic_vector(to_unsigned(SOLVERS, leds'length));
+  leds <= std_logic_vector(to_unsigned((SOLVERS mod (2**leds'Length-1))+1, leds'Length-1)) & avail;
 
 end rtl;
