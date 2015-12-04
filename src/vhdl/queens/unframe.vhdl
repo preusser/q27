@@ -163,6 +163,7 @@ begin
           end if;
 
         when CheckCRC =>
+					rx_got <= '1';
           if rx_dat = CRC then
             ocommit <= '1';
           else
