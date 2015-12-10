@@ -191,8 +191,6 @@ public final class Client extends Thread {
 
 	  // Control
 	  if     (cmd.equals("INFO"))  info();
-	  //	  else if(cmd.equals("CPU+"))  cpu( 1);
-	  //	  else if(cmd.equals("CPU-"))  cpu(-1);
 	  else if(cmd.equals("STRT")) { if(split.length < 2) missing(); else start(split[1]); }
 	  else if(cmd.equals("STOP")) { if(split.length < 2) missing(); else stop (split[1]); }
 	  // Undocumented
@@ -225,9 +223,7 @@ public final class Client extends Thread {
     }
 
     private void help() {
-      out.format("    CPU+  utilize one more CPU if available\n"+
-                 "    CPU-  release the next finishing CPU\n"+
-		 "    HELP  print this help\n"+
+      out.format("    HELP  print this help\n"+
 		 "    INFO  obtain solver info\n"+
 		 "    STOP /dev/ttyXX\n\tstop solver on given device\n"+
 		 "    STRT /dev/ttyXX \"<Description>\" <pipeline depth>\n\tstart solver on given device\n"+
@@ -254,64 +250,58 @@ public final class Client extends Thread {
       }
     }
 
-    private void cpu(int d) {
-      /*
-      final Solver  cpu = parent.solvers.get("CPU");
-      if(cpu == null)  out.format("    No CPU Solver available.\n");
-      else {
-	try {
-	  if(d > 0)  cpu.start();
-	  if(d < 0)  cpu.stop();
-	}
-	catch(Exception e) {}
-	out.format("    %s\n", cpu.description());
-      }
-      */
-    }
-
     private void start(final String  args) {
-      final Matcher  m = Pattern.compile("^(/dev/tty\\S+)\\s+\"(.*)\"\\s+(\\d+)\\s*$").matcher(args);
+      //                                   1                        2           3         4
+      final Matcher  m = Pattern.compile("^(/dev/tty\\S+|/dini/board(\\d))\\s+\"(.*)\"\\s+(\\d+)\\s*$").matcher(args);
       if(m.matches()) {
-	try {
-	  final Map<String, Solver>  solvers = Client.this.solvers;
-	  final String  dev = m.group(1);
+	final Map<String, Solver>  solvers = Client.this.solvers;
+	final String  dev = m.group(1);
+
+	try { // Create and Register Solver Instance
+
+	  final String  dini  = m.group(2);
+	  final String  desc  = m.group(3);
+	  final int     limit = Integer.parseInt(m.group(4));
 	  final Solver  solver;
 
-	  try { // Create and Register Solver Instance
-	    synchronized(solvers) {
-	      if(solvers.containsKey(dev)) {
-		out.format("    Device %s already in use.\n", dev);
-		return;
-	      }
-
-	      final String  desc  = m.group(2);
-	      final int     limit = Integer.parseInt(m.group(3));
-	      solver = new UartSolver(new File(dev), desc, limit);
-	      solvers.put(dev, solver);
-	    }
-
-	    // Initialize UART and Start Solver
-	    final Process  pInit
-	      = Runtime.getRuntime().exec(new String[] {"bash", "-c",
-							"stty -F "+dev+" 115200 raw -cstopb -parenb -crtscts -echo -ixon -ixoff >/dev/null 2>&1" });
-	    if(pInit.waitFor() == 0) {
-	      out.format("    Starting %s.\n", solver);
-	      solver.start(Client.this.db);
+	  synchronized(solvers) {
+	    if(solvers.containsKey(dev)) {
+	      out.format("    Device %s already in use.\n", dev);
 	      return;
 	    }
+
+	    solver = (dini == null)?
+	      new UartSolver(new File(dev), desc, limit) :
+	      new DiniSolver(dini.charAt(0) - '0', desc, limit);
+	    solvers.put(dev, solver);
 	  }
-	  catch(Exception e) {}
-	  out.format("    Could not initialize %s.\n", dev);
-	  synchronized(solvers) { solvers.remove(dev); }
-	  return;
+
+	  // Initialize UART and Start Solver
+	  boolean  fail = false;
+	  if(dini == null) {
+	    final Process  pInit
+	      = Runtime.getRuntime().exec(new String[] {
+		  "bash", "-c",
+		  "stty -F "+dev+" 115200 raw -cstopb -parenb -crtscts -echo -ixon -ixoff >/dev/null 2>&1"
+		});
+	    if(pInit.waitFor() != 0)  fail = true;
+	  }
+	  if(!fail) {
+	    out.format("    Starting %s.\n", solver);
+	    solver.start(Client.this.db);
+	    return;
+	  }
 	}
-	catch(NumberFormatException e) {}
+	catch(Exception e) {}
+	out.format("    Could not initialize %s.\n", dev);
+	synchronized(solvers) { solvers.remove(dev); }
+	return;
       }
       out.format("    Illegal Arguments: '%s'\n", args);
     }
 
     private void stop(String args) {
-      final Matcher  m = Pattern.compile("^(/dev/tty\\S+)\\s*$").matcher(args);
+      final Matcher  m = Pattern.compile("^(/dev/tty\\S+|/dini/board\\d)\\s*$").matcher(args);
       if(m.matches()) {
 	final String  dev = m.group(1);
 
