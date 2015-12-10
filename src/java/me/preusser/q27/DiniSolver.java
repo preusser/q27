@@ -72,6 +72,9 @@ public class DiniSolver extends Solver {
   private final int     board;
   private final String  desc;
 
+  private Thread  reader;
+  private Thread  writer;
+
   public DiniSolver(final int  board, final String  desc, final int  limit) {
     super(limit, 300);
     this.board = board;
@@ -87,12 +90,18 @@ public class DiniSolver extends Solver {
   private static native void _setupFPGA(final int  board);
   private static native void _writeFPGA(final int  board, final int  b);
   private static native int  _readFPGA (final int  board);
+  private static int readFPGA(final int  board) throws InterruptedException {
+    final int  res = _readFPGA(board);
+    if(res < 0)  throw  new InterruptedException();
+    return  res;
+  }
   static {
     System.loadLibrary("dini");
   }
 
   @Override
   public synchronized void start(final Database  db) throws Exception {
+    if(reader != null)  throw  new IllegalStateException("Already running.");
 
     _setupFPGA(board);
 
@@ -101,7 +110,7 @@ public class DiniSolver extends Solver {
     final int  tid = tcnt.getAndIncrement();
 
     // Fork Reader
-    new Thread(tgrp, "Reader-" + tid) {
+    (reader = new Thread(tgrp, "Reader-" + tid) {
       public void run() {
 	final int  board = DiniSolver.this.board;
 	try {
@@ -110,7 +119,7 @@ public class DiniSolver extends Solver {
 	  while(true) {
 	    // Scan for Sentinel
 	    while(true) {
-	      final int  b = _readFPGA(board);
+	      final int  b = readFPGA(board);
 	      if((byte)b == SENTINEL)  break;
 	      System.err.printf("Spurious byte: 0x%02X\n", b);
 	    }
@@ -118,13 +127,13 @@ public class DiniSolver extends Solver {
 	    // Read Frame & Calculate expected CRC
 	    int  crc = FCS[0xFF];
 	    for(int i = 0; i < RESULT_PAY_LENGTH; i++) {
-	      final int  b = _readFPGA(board)&0xFF;
+	      final int  b = readFPGA(board)&0xFF;
 	      data[i] = (byte)b;
 	      crc = FCS[crc^b];
 	    }
 
 	    // Read and Check CRC
-	    if(crc == _readFPGA(board)) {
+	    if(crc == readFPGA(board)) {
 	      final BigInteger  sol = new BigInteger(data);
 	      logCount(sol.shiftRight(56).longValue()&    0xFFFFFFFFFFL,  // case
 		       (sol.longValue()>>>4)         & 0xFFFFFFFFFFFFFL); // counts
@@ -138,14 +147,15 @@ public class DiniSolver extends Solver {
 	    }
 	  }
 	}
-	catch(Exception e) {
+	catch(final InterruptedException e) {}
+	catch(final Exception e) {
 	  e.printStackTrace();
 	}
       }
-    }.start(); // Reader
+    }).start(); // Reader
 
     // Fork Writer
-    new Thread(tgrp, "Writer-" + tid) {
+    (writer = new Thread(tgrp, "Writer-" + tid) {
       public void run() {
 	final int     board = DiniSolver.this.board;
 	final byte[]  data  = new byte[7];
@@ -173,7 +183,20 @@ public class DiniSolver extends Solver {
 	  e.printStackTrace();
 	}
       }
-    }.start(); // Writer
+      }).start(); // Writer
+  }
+
+  @Override
+  public synchronized void stop() {
+    try {
+      reader.interrupt();
+      writer.interrupt();
+    }
+    finally {
+      reader = null;
+      writer = null;
+      super.stop();
+    }
   }
 
 } // class DiniSolver
