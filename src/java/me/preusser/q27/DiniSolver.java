@@ -76,7 +76,7 @@ public class DiniSolver extends Solver {
   private Thread  writer;
 
   public DiniSolver(final int  board, final String  desc, final int  limit) {
-    super(limit, 300);
+    super(limit, 600);
     this.board = board;
     this.desc  = desc;
   }

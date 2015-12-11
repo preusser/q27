@@ -85,7 +85,7 @@ public class UartSolver extends Solver {
   private FileChannel  out;
 
   public UartSolver(final File  dev, final String  desc, final int  limit) {
-    super(limit, 300);
+    super(limit, 600);
     this.dev  = dev;
     this.desc = desc;
   }
