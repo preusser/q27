@@ -10,7 +10,7 @@ entity dnk7_queens0 is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 200;
+    SOLVERS      : positive := 240;
     COUNT_CYCLES : boolean  := false;
 
     SENTINEL : std_logic_vector(7 downto 0) := x"FA";  -- Start Byte
