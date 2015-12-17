@@ -170,37 +170,65 @@ begin
 
   ---------------------------------------------------------------------------
   -- Solver Chain
-  chain: entity work.queens_chain
-    generic map (
-      N            => N,
-      L            => L,
-      SOLVERS      => SOLVERS,
-      COUNT_CYCLES => COUNT_CYCLES
-    )
-    port map (
-      clk   => clk_comp,
-      rst   => rst_comp,
+  blChain: block is
+    signal pful : std_logic;
+    signal pdat : byte;
+    signal peof : std_logic;
+    signal pput : std_logic;
+  begin
+    chain: entity work.queens_chain
+      generic map (
+        N            => N,
+        L            => L,
+        SOLVERS      => SOLVERS,
+        COUNT_CYCLES => COUNT_CYCLES
+      )
+      port map (
+        clk   => clk_comp,
+        rst   => rst_comp,
 
-      piful => piful,
-      pidat => pidat,
-      pieof => pieof,
-      piput => piput,
+        piful => piful,
+        pidat => pidat,
+        pieof => pieof,
+        piput => piput,
 
-      sivld => '0',
-      sidat => (others => '-'),
-      sieof => '-',
-      sigot => open,
+        sivld => '0',
+        sidat => (others => '-'),
+        sieof => '-',
+        sigot => open,
 
-      poful => poful,
-      podat => podat,
-      poeof => poeof,
-      poput => poput,
+        poful => pful,
+        podat => pdat,
+        poeof => peof,
+        poput => pput,
 
-      sovld => sovld,
-      sodat => sodat,
-      soeof => soeof,
-      sogot => sogot
-    );
+        sovld => sovld,
+        sodat => sodat,
+        soeof => soeof,
+        sogot => sogot
+      );
+
+    -- Resync stream so that frames are taken out in one piece
+    sync: entity work.msg_tap
+      generic map (
+        D => PRE_BYTES
+      )
+      port map (
+        clk  => clk_comp,
+        rst  => rst_comp,
+        iful => pful,
+        idat => pdat,
+        ieof => peof,
+        iput => pput,
+        oful => poful,
+        odat => podat,
+        oeof => poeof,
+        oput => poput,
+        tful => '1',
+        tdat => open,
+        tput => open
+      );
+  end block blChain;
 
   -----------------------------------------------------------------------------
   -- Input Stream -> feeds pi(ful|dat|eof|put) and si(vld|dat|eof|got)
