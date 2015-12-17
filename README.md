@@ -82,6 +82,7 @@ FPGA resources.
    1x    | KC705 | Xilinx Kintex-7      | XC7K325T-2      | 144 | 271.4 MHz | 390
    1x    | ML605 | Xilinx Virtex-6      | XC6VLX240T-1    | 125 | 200.0 MHz | 250
    2x    | DE4   | Altera Stratix IV GX | EP4SGX230KF40C2 | 125 | 250.0 MHz | 312
+   4x    | DNK7_F5_PCIe| Xilinx Kintex-7| 5x XC7K325T   | 5x240 | 220.0 MHz |2640
 
    **SE** (Solver Equivalent) - The performance of one solver slice running at 100 MHz.
 
