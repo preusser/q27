@@ -1,3 +1,4 @@
+*.bit
 netlist.lst
 xflow.his
 xflow_script.scr
@@ -8,7 +9,6 @@ xlnx_auto_0_xdb/
 xst/
 *.log
 *_queens_uart.bgn
-*_queens_uart.bit
 *_queens_uart.bld
 *_queens_uart.dep
 *_queens_uart.drc
