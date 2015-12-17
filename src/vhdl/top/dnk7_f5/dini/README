@@ -1,0 +1,7 @@
+The modules contained within this directory tree have been implemented by
+the DINI Group as part of the reference design for their DNK7_F5_PCIe
+Algorithm Acceleration board.
+
+These modules implement the host communication backbone also used by this
+implementation of a Q27 Solver. They are used and included in this open-source
+project by the greatly appreciated permission of the DINI Group.
