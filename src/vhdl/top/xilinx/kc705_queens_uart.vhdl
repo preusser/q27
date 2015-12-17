@@ -165,7 +165,6 @@ begin
       rst   => rst,
       rx    => rx,
       tx    => tx,
-      snap  => open,
       avail => open
     );
   cts <= rts;

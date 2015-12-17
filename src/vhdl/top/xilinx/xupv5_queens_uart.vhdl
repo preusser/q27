@@ -64,7 +64,6 @@ architecture rtl of xupv5_queens_uart is
   signal rst : std_logic;
 
   -- Solver Status
-  signal snap : std_logic_vector(3 downto 0);
   signal avail : std_logic;
 
 begin
@@ -139,12 +138,11 @@ begin
       rst   => rst,
       rx    => rx,
       tx    => tx,
-      snap  => snap,
       avail => avail
     );
 
   ----------------------------------------------------------------------------
   -- Basic Status Output
-  leds <= snap & std_logic_vector(to_unsigned((SOLVERS mod 7)+1, 3)) & avail;
+  leds <= std_logic_vector(to_unsigned((SOLVERS mod (2**(leds'length-1)-1))+1, leds'length-1)) & avail;
 
 end rtl;

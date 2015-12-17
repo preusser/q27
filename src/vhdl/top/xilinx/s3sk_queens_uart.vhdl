@@ -150,6 +150,6 @@ begin
 
   ----------------------------------------------------------------------------
   -- Basic Status Output
-  leds <= std_logic_vector(to_unsigned((SOLVERS mod (2**leds'Length-1))+1, leds'Length-1)) & avail;
+  leds <= std_logic_vector(to_unsigned((SOLVERS mod (2**(leds'length-1)-1))+1, leds'length-1)) & avail;
 
 end rtl;
