@@ -18,6 +18,7 @@ Have a look at the
 Table of Contents
 -----------------
  1. [License](#license)
+ 2. [News](#news)
  2. [Purpose](#purpose)
  3. [How to Contribute](#how-to-contribute)
  4. [Things To Do Alongside](#things-to-do-alongside)
@@ -33,6 +34,13 @@ this repository.
 The VHDL implementation builds upon the
 [PoC Library](https://github.com/VLSI-EDA/PoC), which is published
 under the terms of the Apache 2.0 license.
+
+## News
+Dec 2015:
+With our new multi-FPGA cluster setup and running, we hope to make considerable
+computational progress over the holidays. (Yes, we let them labor hard while we
+relax.) Check out the [performance figures](#how-to-contribute) to appreciate
+their contribution.
 
 ## Purpose
 Q27 demonstrates the tremendous power of compute accelerators provided through
