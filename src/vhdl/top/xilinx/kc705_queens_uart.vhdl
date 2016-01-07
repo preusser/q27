@@ -32,7 +32,7 @@ entity kc705_queens_uart is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 144;
+    SOLVERS      : positive := 240;
     COUNT_CYCLES : boolean  := false;
 
     CLK_FREQ : FREQ     := 200 MHz;
@@ -70,8 +70,8 @@ library PoC;
 architecture rtl of kc705_queens_uart is
 
   -- Global Control
-  constant CLK_COMP_FREQ : FREQ := CLK_FREQ * CLK_MULA / CLK_DIVA / CLK_DIVB;
-  constant CLK_SLOW_FREQ : FREQ := CLK_FREQ * CLK_MULA / CLK_DIVA / 100;
+  constant CLK_COMP_FREQ : FREQ := CLK_FREQ / CLK_DIVA * CLK_MULA / CLK_DIVB;
+  constant CLK_SLOW_FREQ : FREQ := CLK_FREQ / CLK_DIVA * CLK_MULA / 100;
   signal clk200   : std_logic;          -- 200 MHz Input Clock
   signal clk_comp : std_logic;          -- Computation Clock
   signal clk_slow : std_logic;          -- Slow Interface Clock

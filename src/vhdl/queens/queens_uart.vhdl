@@ -264,11 +264,12 @@ begin
 		signal ovld : std_logic;
   begin
 
-		sogot <= sovld and not sful;
+    sogot <= sovld and not sful;
     buf: fifo_cc_got
       generic map (
-        MIN_DEPTH      => 5*(SOLVERS+5),
-        D_BITS         => 9
+        MIN_DEPTH => 5*(SOLVERS+5),
+        D_BITS    => 9,
+        STATE_REG => true
       )
       port map (
         clk => clk,
