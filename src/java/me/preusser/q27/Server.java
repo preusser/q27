@@ -38,7 +38,6 @@ import  java.io.PrintWriter;
 import  java.io.RandomAccessFile;
 import  java.io.IOException;
 
-import  java.nio.ByteBuffer;
 import  java.nio.channels.FileChannel;
 
 import  java.net.InetAddress;
@@ -270,7 +269,7 @@ public final class Server {
 
 	// Non-Option File Arguments
 	if(args.length-idx != 4)  break;
-	final ByteBuffer  db;
+	final FileChannel  db;
 
 	{ // Open Database
 	  final File  dbFile = new File(arg);
@@ -278,8 +277,7 @@ public final class Server {
 	    System.err.print(dbFile + ": DB does not exist.");
 	    System.exit(1);
 	  }
-	  final RandomAccessFile  dbRAF = new RandomAccessFile(dbFile, "rw");
-	  db = dbRAF.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, dbRAF.length());
+	  db = new RandomAccessFile(dbFile, "rw").getChannel();
 	}
 
 	// Duplicate Database Stream
