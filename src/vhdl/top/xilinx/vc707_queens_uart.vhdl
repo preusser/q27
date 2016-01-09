@@ -32,13 +32,13 @@ entity vc707_queens_uart is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 215;
+    SOLVERS      : positive := 315;
     COUNT_CYCLES : boolean  := false;
 
     CLK_FREQ : FREQ     := 200 MHz;
-    CLK_DIVA : positive :=  5;  -- Choose so that CLK_FREQ/CLK_DIVA*CLK_MULA
-    CLK_MULA : positive := 44;  -- is smaller than but close to 1800 MHz
-    CLK_DIVB : positive :=  7;
+    CLK_DIVA : positive :=  8;  -- Choose so that CLK_FREQ/CLK_DIVA*CLK_MULA
+    CLK_MULA : positive := 41;  -- is smaller than but close to 1800 MHz
+    CLK_DIVB : positive :=  4;
 
     BAUDRATE : positive                     := 115200;
     SENTINEL : std_logic_vector(7 downto 0) := x"FA"  -- Start Byte
