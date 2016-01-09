@@ -37,7 +37,7 @@ entity kc705_queens_uart is
 
     CLK_FREQ : FREQ     := 200 MHz;
     CLK_DIVA : positive :=  7;
-    CLK_MULA : positive := 57;
+    CLK_MULA : positive := 61;
     CLK_DIVB : positive :=  6;
 
     BAUDRATE : positive                     := 115200;

@@ -1,4 +1,5 @@
-set TOP kc705_queens_uart
+set TOP  kc705_queens_uart
+set PART xc7k325t-2-ffg900
 
 read_vhdl -library PoC ../../PoC/common/my_config_KC705.vhdl
 read_vhdl -library PoC ../../PoC/common/my_project.vhdl
@@ -38,11 +39,7 @@ read_vhdl ../../queens/queens_chain.vhdl
 read_vhdl ../../queens/queens_uart.vhdl
 read_vhdl $TOP.vhdl
 
-synth_design \
-  -include_dirs "." \
-  -top  $TOP \
-  -part xc7k325t-2-ffg900 \
-  -verilog_define KINTEX_7
+synth_design -top $TOP -part $PART
 
 # External Clock
 create_clock -name CLK200 -period 5.0 [get_ports clk_p]
@@ -72,8 +69,14 @@ route_design -directive Explore
 report_drc
 report_utilization
 report_timing -setup -hold -max_paths 3 -nworst 3 -input_pins -sort_by group -file  $TOP.twr
-report_timing_summary -delay_type min_max -path_type full_clock_expanded -report_unconstrained -check_timing_verbose -max_paths 3 -nworst 3 -significant_digits 3 -input_pins -name {timing_1} -file $TOP.twr
+report_timing_summary -delay_type min_max -path_type full_clock_expanded -report_unconstrained -check_timing_verbose -max_paths 3 -nworst 3 -significant_digits 3 -input_pins -file $TOP.twr
 
+if {! [string match -nocase {*timing constraints are met*} [report_timing_summary -no_header -no_detailed_paths -return_string]] } {
+  puts  {Timing was NOT met!}
+  exit 2
+}
+
+set_property BITSTREAM.GENERAL.COMPRESS true [current_design]
 write_bitstream -force $TOP.bit
 
 quit
