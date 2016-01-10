@@ -37,7 +37,7 @@ read_vhdl ../../queens/xilinx/arbit_forward.vhdl
 read_vhdl ../../queens/queens_slice.vhdl
 read_vhdl ../../queens/queens_chain.vhdl
 read_vhdl ../../queens/queens_uart.vhdl
-read_vhdl $TOP.vhdl
+read_vhdl ${TOP}.vhdl
 
 synth_design -top $TOP -part $PART
 

@@ -6,10 +6,28 @@ MAKEFLAGS += --silent
 # Default Target
 default:
 	echo Available Targets:; \
-	for i in *.prj; do echo -e "\t$$(basename $$i .prj).bit"; done; echo
+	for i in *.prj; do echo -e "\t$$(basename $$i .prj).bit"; done; \
+	for i in *.tcl; do echo -e "\t$$(basename $$i .tcl).bit"; done; echo
 
 # Include Dependencies
 -include $(basename $(MAKECMDGOALS)).dep
+
+#############################################################################
+# Vivado flow for Gen-7 (is triggered by presence of TCL file)
+
+%.dep: %.tcl
+	@set -e; \
+	sed -ne's/^set \+TOP \+\(.*\)$$/TOP := \1/p' $< >$@; \
+	echo -n '$*.bit: ' >>$@; \
+	sed -ne's/^read_vhdl \(-library [A-Za-z_]\+ \)\?\(.*\)$$/\2/p' $< | tr '{}\n' '() ' >>$@; \
+	echo >>$@
+
+%.bit: %.tcl %.vhdl
+	mkdir -p $*.tmp/ && \
+	vivado -mode tcl -source $< -nojournal -log $*.log -tempDir $*.tmp/
+
+#############################################################################
+# xflow for Gen-6 and older
 
 # Generation of Dependencies
 %.dep: %.prj
