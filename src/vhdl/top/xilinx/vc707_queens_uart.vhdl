@@ -32,7 +32,7 @@ entity vc707_queens_uart is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 315;
+    SOLVERS      : positive := 337;
     COUNT_CYCLES : boolean  := false;
 
     CLK_FREQ : FREQ     := 200 MHz;
