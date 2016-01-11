@@ -36,6 +36,17 @@ The VHDL implementation builds upon the
 under the terms of the Apache 2.0 license.
 
 ## News
+Jan 11, 2016:
+Triggered by the extremely different synthesis results obtained for
+essentially the same FPGA devices found on the KC705 and the DNK7 FPGAs boards,
+Vivado was given a chance for all Xilinx Gen-7 platforms. The results are
+just **unbelievably amazing**:
+* KC705: 67% more solvers, 7% faster clock, and
+* VC707: 56% more solvers, 2% faster clock.
+This is not just a different trade-off but truly better! The only shade of
+a cloud, Vivado leaves is that it required a workaround for dealing with
+physical VHDL types properly.
+
 Dec 2015:
 With our new multi-FPGA cluster setup and running, we hope to make considerable
 computational progress over the holidays. (Yes, we let them labor hard while we
