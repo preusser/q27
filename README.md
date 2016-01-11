@@ -46,8 +46,8 @@ just **unbelievably amazing**:
 * VC707: 56% more solvers, 2% faster clock.
 
 This is not just a different trade-off but truly better! The only shade of
-a cloud, Vivado leaves is that it required a workaround for dealing with
-physical VHDL types properly.
+a cloud, Vivado leaves is that it required a [workaround](commit/cecaad8c833bd1d7687da831506cc1c2fa0228d6#diff-a84316ebb06574d233e2e751efbb43d4R84)
+for dealing with physical VHDL types properly.
 
 **Dec 2015**:
 With our new multi-FPGA cluster setup and running, we hope to make considerable
