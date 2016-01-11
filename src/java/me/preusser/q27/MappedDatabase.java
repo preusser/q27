@@ -95,10 +95,13 @@ public class MappedDatabase implements Database {
 	    if(nidx >= mappings.length)  return  null;
 	    final SoftReference<LongBuffer>  ref = mappings[nidx];
 	    if((ref == null) || ((buf = ref.get()) == null)) {
+	      final long  base = nidx*(long)MAPPING_SIZE;
+	      long  len = db.size() - base;
+	      if(len > MAPPING_SIZE)  len = MAPPING_SIZE;
+
 	      mappings[this.ptrIdx = nidx] = new SoftReference(
 		       this.ptrBuf = buf = db.map(FileChannel.MapMode.READ_WRITE,
-						  nidx*MAPPING_SIZE,
-						  MAPPING_SIZE).asLongBuffer());
+						  base, len).asLongBuffer());
 	    }
 	    ofs = 0;
 	  }
