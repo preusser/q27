@@ -24,7 +24,6 @@ import  java.io.File;
 import  java.io.PrintWriter;
 import  java.io.RandomAccessFile;
 
-import  java.nio.ByteBuffer;
 import  java.nio.channels.FileChannel;
 
 
@@ -35,14 +34,13 @@ class LocalMain {
       if(args.length == 4) {
 
 	// Open Database
-	final ByteBuffer  db; {
+	final FileChannel  db; {
 	  final File  dbFile = new File(args[0]);
 	  if(!dbFile.exists()) {
 	    System.err.print(dbFile + ": DB does not exist.");
 	    System.exit(1);
 	  }
-	  final RandomAccessFile  dbRAF = new RandomAccessFile(dbFile, "rw");
-	  db = dbRAF.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, dbRAF.length());
+	  db = new RandomAccessFile(dbFile, "rw").getChannel();
 	}
 
 	// Open UART

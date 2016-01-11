@@ -20,6 +20,8 @@
  ****************************************************************************/
 package me.preusser.q27;
 
+import  java.lang.ref.SoftReference;
+
 import  java.util.AbstractList;
 import  java.util.List;
 import  java.util.Formatter;
@@ -28,86 +30,103 @@ import  java.time.LocalDateTime;
 
 import  java.io.DataOutput;
 import  java.io.PrintWriter;
+import  java.io.IOException;
 
 import  java.nio.ByteBuffer;
 import  java.nio.LongBuffer;
+import  java.nio.channels.FileChannel;
 
 
 public class MappedDatabase implements Database {
 
-  private final LongBuffer  db;
-  private int  ptr;
+  private static final int  MAPPING_SIZE = 1<<22;
 
-  private final IDMap<Object>  solvers;
+  //+ Underlying Database File
+  private final FileChannel                  db;
+  private final SoftReference<LongBuffer>[]  mappings;
 
+  private int         ptrIdx;
+  private LongBuffer  ptrBuf;
+  private int         ptrOfs;
+
+  //+ Auxiliary Outputs
   private final DataOutput   dupStream;
   private final PrintWriter  solverLog;
 
-  public MappedDatabase(final ByteBuffer   db,
+  //+ Solver IDs
+  private final IDMap<Object>  solvers;
+
+  public MappedDatabase(final FileChannel  db,
 			final DataOutput   dupStream,
-			final PrintWriter  solverLog) {
-    final LongBuffer  ldb = db.asLongBuffer();
-    if((ldb.limit()&1) == 0) {
-      this.db         = ldb;
-      this.solvers    = new IDMap<>(1<<12);
+			final PrintWriter  solverLog) throws IOException {
+
+    final long  size = db.size();
+    if((size > 0) && (((int)size & 7) == 0)) {
+      this.db       = db;
+      this.mappings = new SoftReference[(int)((size-1)/MAPPING_SIZE)+1];
+
+      this.ptrIdx = -1;
+      this.ptrBuf = LongBuffer.allocate(0);
+
       this.dupStream  = dupStream;
       this.solverLog  = solverLog;
+
+      this.solvers = new IDMap<>(1<<12);
       return;
     }
     throw  new IllegalArgumentException("Truncated Buffer");
   }
 
-  public List<? extends MappedEntry> asList() {
-    return  new AbstractList<MappedEntry>() {
-      public int size() {
-	return  db.limit()>>1;
-      }
-
-      public MappedEntry get(int  idx) {
-	idx <<= 1;
-	return  new MappedEntry(db.get(idx)>>>20, idx);
-      }
-    };
-  }
-
   @Override
   public MappedEntry fetchUnsolved() {
-    final LongBuffer  db = this.db;
+    try {
+      final FileChannel  db = this.db;
 
-    int   ptr;
-    long  cs;
-    synchronized(db) {
-      ptr = this.ptr;
-      while(true) {
-	if(ptr >= db.limit())  return  null;
-	cs = db.get(ptr);
-	if((((int)cs << 12) == 0) && (db.get(ptr+1) == 0L)) break;
-	ptr += 2;
-      }
-      db.put(ptr, cs | timestamp(LocalDateTime.now()));
-      this.ptr = ptr + 2;
-    }
-    return  new MappedEntry(cs>>>20, ptr);
+      synchronized(db) {
+	LongBuffer  buf = this.ptrBuf;
+	int         ofs = this.ptrOfs;
 
-  } // fetchUnsolved
+	while(true) {
+	  // Need to go to next mapping
+	  if(ofs >= buf.limit()) {
+	    final SoftReference<LongBuffer>[]  mappings = this.mappings;
 
-  public void untakeStale(final int  timeout_min) {
-    final int  cutoff = timestamp(LocalDateTime.now().minusMinutes(timeout_min));
+	    final int  nidx = this.ptrIdx+1;
+	    if(nidx >= mappings.length)  return  null;
+	    final SoftReference<LongBuffer>  ref = mappings[nidx];
+	    if((ref == null) || ((buf = ref.get()) == null)) {
+	      mappings[this.ptrIdx = nidx] = new SoftReference(
+		       this.ptrBuf = buf = db.map(FileChannel.MapMode.READ_WRITE,
+						  nidx*MAPPING_SIZE,
+						  MAPPING_SIZE).asLongBuffer());
+	    }
+	    ofs = 0;
+	  }
 
-    final LongBuffer  db = this.db;
-    synchronized(db) {
-      int  ptr = this.ptr;
-      while(ptr > 0) {
-	final long  solv = db.get(--ptr);
-	final long  spec = db.get(--ptr);
-	if((solv == 0) && ((((int)spec << 12) >>> 12) < cutoff)) {
-	  db.put(ptr, (spec>>20)<<20);
-	  this.ptr = ptr;
+	  final long  cs;
+	  synchronized(buf) {
+	    cs = buf.get(ofs);
+	    if((((int)cs << 12) != 0) || (buf.get(ofs+1) != 0L)) {
+	      ofs += 2;
+	      continue;
+	    }
+
+	    // Have fresh case
+	    buf.put(ofs, cs | timestamp(LocalDateTime.now()));
+	  }
+	  this.ptrOfs = ofs + 2;
+
+	  return  new MappedEntry(cs>>>20, buf, ofs);
 	}
       }
+
+    }
+    catch(final IOException  e) {
+      e.printStackTrace();
+      return  null;
     }
 
-  } // untakeStale
+  } // fetchUnsolved
 
   private static int timestamp(final LocalDateTime  time) {
     return ((((((((((time.getYear()-2015)&3)) << 4) |
@@ -117,41 +136,43 @@ public class MappedDatabase implements Database {
 
   private final class MappedEntry extends Entry {
 
-    private final int  idx;
+    private final LongBuffer  buf;
+    private final int         ofs;
 
-    public MappedEntry(final long  spec, final int  idx) {
+    public MappedEntry(final long  spec,
+		       final LongBuffer  buf, final int  ofs) {
       super(spec);
-      this.idx = idx;
+      this.buf = buf;
+      this.ofs = ofs;
     }
 
     @Override
     public int hashCode() {
-      return  idx;
+      return  ofs;
     }
 
     @Override
     public boolean equals(final Object  o) {
       if(o instanceof MappedEntry) {
 	final MappedEntry  oe = (MappedEntry)o;
-	if(this.idx == oe.idx) {
-	  if(MappedDatabase.this == oe.owner())  return  true;
-	}
+	if((this.ofs == oe.ofs) && (this.buf == oe.buf))  return  true;
       }
       return  false;
     }
 
-    private MappedDatabase owner() { return  MappedDatabase.this; }
-
     @Override
     public String toString() {
       final long  spec;
-      final long  solv; {
-	final LongBuffer  db = MappedDatabase.this.db;
-	synchronized(db) {
-	  spec = db.get(idx);
-	  solv = db.get(idx+1);
+      final long  solv;
+      {
+	final LongBuffer  buf = this.buf;
+	final int         ofs = this.ofs;
+	synchronized(buf) {
+	  spec = buf.get(ofs);
+	  solv = buf.get(ofs+1);
 	}
       }
+
       final StringBuilder  bld = new StringBuilder();
       final Formatter      fmt = new Formatter(bld);
       final int  time = ((int)spec << 12) >>> 12;
@@ -194,13 +215,13 @@ public class MappedDatabase implements Database {
 	  res |= (long)sid << 52;
 	}
 	final long  spec = (getSpec() << 20) | timestamp(LocalDateTime.now());
-	final LongBuffer  db   = MappedDatabase.this.db;
-	final int         idx  = this.idx;
-	synchronized(db) {
-	  if(((db.get(idx)^spec)>>20) == 0L) {
-	    if(db.get(idx+1) == 0L) {
-	      db.put(idx,  spec);
-	      db.put(idx+1, res);
+	final LongBuffer  buf = this.buf;
+	final int         ofs = this.ofs;
+	synchronized(buf) {
+	  if(((buf.get(ofs)^spec)>>20) == 0L) {
+	    if(buf.get(ofs+1) == 0L) {
+	      buf.put(ofs,  spec);
+	      buf.put(ofs+1, res);
 	    }
 	    else {
 	      final DataOutput  dupStream = MappedDatabase.this.dupStream;
