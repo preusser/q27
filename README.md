@@ -36,18 +36,20 @@ The VHDL implementation builds upon the
 under the terms of the Apache 2.0 license.
 
 ## News
-Jan 11, 2016:
+**Jan 11, 2016**:
 Triggered by the extremely different synthesis results obtained for
 essentially the same FPGA devices found on the KC705 and the DNK7 FPGAs boards,
 Vivado was given a chance for all Xilinx Gen-7 platforms. The results are
 just **unbelievably amazing**:
+
 * KC705: 67% more solvers, 7% faster clock, and
 * VC707: 56% more solvers, 2% faster clock.
+
 This is not just a different trade-off but truly better! The only shade of
 a cloud, Vivado leaves is that it required a workaround for dealing with
 physical VHDL types properly.
 
-Dec 2015:
+**Dec 2015**:
 With our new multi-FPGA cluster setup and running, we hope to make considerable
 computational progress over the holidays. (Yes, we let them labor hard while we
 relax.) Check out the [performance figures](#how-to-contribute) to appreciate
@@ -97,8 +99,8 @@ FPGA resources.
 
    Count | Board | Family | Device | Solvers | Clock | SE
    ------|-------|--------|--------|---------|-------|-----
-   1x    | VC707 | Xilinx Virtex-7      | XC7VX485T-2     | 215 | 251.4 MHz | 540
-   1x    | KC705 | Xilinx Kintex-7      | XC7K325T-2      | 144 | 271.4 MHz | 390
+   1x    | VC707 | Xilinx Virtex-7      | XC7VX485T-2     | 337 | 256.2 MHz | 864
+   1x    | KC705 | Xilinx Kintex-7      | XC7K325T-2      | 241 | 290.4 MHz | 700
    1x    | ML605 | Xilinx Virtex-6      | XC6VLX240T-1    | 125 | 200.0 MHz | 250
    2x    | DE4   | Altera Stratix IV GX | EP4SGX230KF40C2 | 125 | 250.0 MHz | 312
    4x    | DNK7_F5_PCIe| Xilinx Kintex-7| 5x XC7K325T   | 5x240 | 220.0 MHz |2640
