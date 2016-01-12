@@ -4,10 +4,12 @@ xflow.his
 xflow_script.scr
 smartpreview.twr
 par_usage_statistics.html
+fsm_encoding.os
 _xmsgs/
 xlnx_auto_0_xdb/
 xst/
 *.log
+*_queens_uart.tmp
 *_queens_uart.bgn
 *_queens_uart.bld
 *_queens_uart.dep
