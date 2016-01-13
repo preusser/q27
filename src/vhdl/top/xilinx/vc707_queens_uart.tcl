@@ -62,6 +62,10 @@ set_property PACKAGE_PIN AR34     [get_ports cts_n]
 set_property IOSTANDARD  LVCMOS18 [get_ports VC707_FanControl_PWM]
 set_property PACKAGE_PIN BA37     [get_ports VC707_FanControl_PWM]
 
+# Platform
+set_property CFGBVS GND [current_design]
+set_property CONFIG_VOLTAGE 1.8 [current_design]
+
 opt_design -retarget -propconst -sweep
 place_design -directive Explore
 report_utilization
