@@ -99,13 +99,19 @@ FPGA resources.
 
    Count | Board | Family | Device | Solvers | Clock | SE
    ------|-------|--------|--------|---------|-------|-----
-   1x    | VC707 | Xilinx Virtex-7      | XC7VX485T-2     | 337 | 256.2 MHz | 864
+   1x    | VC707 | Xilinx Virtex-7      | XC7VX485T-2     | 325 | 250.0 MHz | 812
+         |(VC707)|(Xilinx Virtex-7)     |(XC7VX485T-2)    |(337)|(256.2 MHz)|(864)
    1x    | KC705 | Xilinx Kintex-7      | XC7K325T-2      | 241 | 290.4 MHz | 700
    1x    | ML605 | Xilinx Virtex-6      | XC6VLX240T-1    | 125 | 200.0 MHz | 250
    2x    | DE4   | Altera Stratix IV GX | EP4SGX230KF40C2 | 125 | 250.0 MHz | 312
    4x    | DNK7_F5_PCIe| Xilinx Kintex-7| 5x XC7K325T   | 5x240 | 220.0 MHz |2640
 
    **SE** (Solver Equivalent) - The performance of one solver slice running at 100 MHz.
+
+   It appears the power supply on the VC707 board is failing us on the cramped
+   Q27 design although computation picks up quite gently as problems arrive
+   over the slow UART. This is why the maximum performance design is actually
+   not in use.
 
    We will happily port to other powerful platforms!
 
