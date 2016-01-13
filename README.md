@@ -45,8 +45,8 @@ just **unbelievably amazing**:
 * KC705: 67% more solvers, 7% faster clock, and
 * VC707: 56% more solvers, 2% faster clock.
 
-This is not just a different trade-off but truly better! The only shade of
-a cloud, Vivado leaves is that it required a [workaround](https://github.com/preusser/q27/commit/cecaad8c833bd1d7687da831506cc1c2fa0228d6#diff-a84316ebb06574d233e2e751efbb43d4R84)
+This is not just a different trade-off but truly tremendously better! The only shade of
+a cloud that Vivado leaves is that it required a [workaround](https://github.com/preusser/q27/commit/cecaad8c833bd1d7687da831506cc1c2fa0228d6#diff-a84316ebb06574d233e2e751efbb43d4R84)
 for dealing with physical VHDL types properly.
 
 **Dec 2015**:
