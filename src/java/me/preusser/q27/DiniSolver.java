@@ -69,15 +69,15 @@ public class DiniSolver extends Solver {
   private static final ThreadGroup    tgrp = new ThreadGroup("DINI Workers");
   private static final AtomicInteger  tcnt = new AtomicInteger();
 
-  private final int     board;
-  private final String  desc;
+  private final DiniBoard  board;
+  private final String     desc;
 
   private Thread  reader;
   private Thread  writer;
 
   public DiniSolver(final int  board, final String  desc, final int  limit) {
     super(limit, 600);
-    this.board = board;
+    this.board = new DiniBoard(board);
     this.desc  = desc;
   }
 
@@ -86,6 +86,7 @@ public class DiniSolver extends Solver {
     return  desc + " on /dini/board" + board;
   }
 
+  /*
   // Configures the FPGA, e.g., enables the proper interrupts
   private static native void _setupFPGA(final int  board);
   private static native void _writeFPGA(final int  board, final int  b);
@@ -95,15 +96,27 @@ public class DiniSolver extends Solver {
     if(res < 0)  throw  new InterruptedException();
     return  res;
   }
-  static {
-    System.loadLibrary("dini");
+  */
+
+  private int read() throws InterruptedException {
+    final DiniBoard  board = this.board;
+    while(true) {
+      final int  b = board.read(8L);
+      if(b >= 0)  return  b & 0xFF;
+      board.awaitInterrupt(0x0100000000L, 10);
+      if(Thread.interrupted())  throw  new InterruptedException();
+    }
   }
 
   @Override
   public synchronized void start(final Database  db) throws Exception {
     if(reader != null)  throw  new IllegalStateException("Already running.");
 
-    _setupFPGA(board);
+    { // Setup Q27 Design Communication
+      final DiniBoard  board = this.board;
+      board.write(0L, 0); // Clear and disable input interrupt
+      board.write(4L, 3); // Enable output interrupt
+    }
 
     // Prepare inherited start()
     super.start(db);
@@ -112,14 +125,13 @@ public class DiniSolver extends Solver {
     // Fork Reader
     (reader = new Thread(tgrp, "Reader-" + tid) {
       public void run() {
-	final int  board = DiniSolver.this.board;
 	try {
 	  final byte[] data = new byte[RESULT_PAY_LENGTH];
 
 	  while(true) {
 	    // Scan for Sentinel
 	    while(true) {
-	      final int  b = readFPGA(board);
+	      final int  b = read();
 	      if((byte)b == SENTINEL)  break;
 	      System.err.printf("Spurious byte: 0x%02X\n", b);
 	    }
@@ -127,13 +139,13 @@ public class DiniSolver extends Solver {
 	    // Read Frame & Calculate expected CRC
 	    int  crc = FCS[0xFF];
 	    for(int i = 0; i < RESULT_PAY_LENGTH; i++) {
-	      final int  b = readFPGA(board)&0xFF;
+	      final int  b = read();
 	      data[i] = (byte)b;
 	      crc = FCS[crc^b];
 	    }
 
 	    // Read and Check CRC
-	    if(crc == readFPGA(board)) {
+	    if(crc == read()) {
 	      final BigInteger  sol = new BigInteger(data);
 	      logCount(sol.shiftRight(56).longValue()&    0xFFFFFFFFFFL,  // case
 		       (sol.longValue()>>>4)         & 0xFFFFFFFFFFFFFL); // counts
@@ -157,8 +169,8 @@ public class DiniSolver extends Solver {
     // Fork Writer
     (writer = new Thread(tgrp, "Writer-" + tid) {
       public void run() {
-	final int     board = DiniSolver.this.board;
-	final byte[]  data  = new byte[7];
+	final DiniBoard  board = DiniSolver.this.board;
+	final byte[]     data  = new byte[7];
 
 	try {
 	  data[0] = SENTINEL;
@@ -169,14 +181,14 @@ public class DiniSolver extends Solver {
 	    long  cs  = fetchCase() << 24;
 	    if(cs == 0L)  return;
 
-	    _writeFPGA(board, SENTINEL);
+	    board.write(8L, SENTINEL);
 	    for(int i = 0; i < 5; i++) {
 	      final int  b = (int)(cs >> 56);
-	      _writeFPGA(board, b);
+	      board.write(8L, b);
 	      crc  = FCS[crc ^ (0xFF & b)];
 	      cs <<= 8;
 	    }
-	    _writeFPGA(board, crc);
+	    board.write(8L, crc);
 	  }
 	}
 	catch(Exception e) {
