@@ -6,6 +6,8 @@ power of designated circuit designs implemented on FPGA accelerators at the
 example of enumerating and couting all the valid solutions of the
 27-[Queens Puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle). 
 
+[Pitch Presentation](pitch.pdf)
+
 # Sponsors
 
 **Wanted**: If you are willing to **contribute compute time** on your own
