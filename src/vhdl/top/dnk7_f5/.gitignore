@@ -1,4 +1,6 @@
 .Xil
+*.dep
+*.tmp/
 *.log
 *.jou
 *.twr

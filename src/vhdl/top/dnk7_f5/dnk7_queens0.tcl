@@ -1,4 +1,5 @@
 set TOP dnk7_queens0
+set PART xc7k325t-1-ffg900
 read_verilog dini/pcie/pcie_dma/user_fpga/pcie_ddr_user_interface.v
 
 read_vhdl -library PoC ../../PoC/common/my_config_KC705.vhdl
@@ -23,12 +24,10 @@ read_vhdl ../../queens/expand_blocking.vhdl
 read_vhdl ../../queens/xilinx/arbit_forward.vhdl
 read_vhdl ../../queens/queens_slice.vhdl
 read_vhdl ../../queens/queens_chain.vhdl
-read_vhdl $TOP.vhdl
+read_vhdl ${TOP}.vhdl
 
-synth_design \
+synth_design -top $TOP -part $PART \
   -include_dirs "." \
-  -top  $TOP \
-  -part xc7k325t-1-ffg900 \
   -verilog_define KINTEX_7
 
 # Clocks
@@ -288,6 +287,9 @@ set_property PACKAGE_PIN E20              [get_ports BUS_PCIE_CLK_IN_N]
 set_property PACKAGE_PIN D17              [get_ports BUS_PCIE_CLK_OUT_P]
 set_property PACKAGE_PIN D18              [get_ports BUS_PCIE_CLK_OUT_N]
 
+# Platform
+set_property CFGBVS GND [current_design]
+set_property CONFIG_VOLTAGE 1.8 [current_design]
 
 opt_design -retarget -propconst -sweep
 place_design -directive Explore
@@ -296,8 +298,14 @@ route_design -directive Explore
 report_drc
 report_utilization
 report_timing -setup -hold -max_paths 3 -nworst 3 -input_pins -sort_by group -file  $TOP.twr
-report_timing_summary -delay_type min_max -path_type full_clock_expanded -report_unconstrained -check_timing_verbose -max_paths 3 -nworst 3 -significant_digits 3 -input_pins -name {timing_1} -file $TOP.twr
+report_timing_summary -delay_type min_max -path_type full_clock_expanded -report_unconstrained -check_timing_verbose -max_paths 3 -nworst 3 -significant_digits 3 -input_pins -file $TOP.twr
 
+if {! [string match -nocase {*timing constraints are met*} [report_timing_summary -no_header -no_detailed_paths -return_string]] } {
+  puts  {Timing was NOT met!}
+  exit 2
+}
+
+set_property BITSTREAM.GENERAL.COMPRESS true [current_design]
 write_bitstream -force $TOP.bit
 
 quit
