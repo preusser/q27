@@ -33,19 +33,9 @@ synth_design -top $TOP -part $PART \
 # Clocks
 set PCIECLK_PERIOD      6.000
 create_clock -add -name BUS_PCIE_CLK_IN_P -period $PCIECLK_PERIOD [get_ports BUS_PCIE_CLK_IN_P]
-
 set MBCLK_PERIOD       20.000
 create_clock -name CLK_MBCLK  -period $MBCLK_PERIOD [get_ports CLK_MBCLK]
-
-set COMPCLK [get_clocks -of_objects [get_pins -hier -filter {NAME=~*clk_compo/O}]]
-
-set FASTEST_CLK_PERIOD [expr {min($PCIECLK_PERIOD, $MBCLK_PERIOD)}]
-set CLK_SYSCLK [get_ports CLK_SYSCLK_P]
-if {[llength $CLK_SYSCLK]} then {
-  set INTCLK_PERIOD     5.000
-  create_clock -name CLK_SYSCLK -period $INTCLK_PERIOD $CLK_SYSCLK
-  set FASTEST_CLK_PERIOD [expr {min($FASTEST_CLK_PERIOD, $INTCLK_PERIOD)}]
-}
+set FASTEST_CLK_PERIOD  4.545
 
 # Cross-Clock FIFOs
 set_max_delay  -datapath_only -from [get_pins -hier -filter {NAME =~ *IPz_reg*/Q}] -to [get_pins -hier -filter {NAME =~ *IPs_reg*/D}] $FASTEST_CLK_PERIOD

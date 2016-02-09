@@ -1,6 +1,5 @@
 set TOP dnk7_queens1
 set PART xc7k325t-1-ffg676
-read_verilog dini/pcie/pcie_dma/user_fpga/pcie_ddr_user_interface.v
 
 read_vhdl -library PoC ../../PoC/common/my_config_KC705.vhdl
 read_vhdl -library PoC ../../PoC/common/my_project.vhdl
@@ -23,22 +22,12 @@ read_vhdl ../../queens/queens_slice.vhdl
 read_vhdl ../../queens/queens_chain.vhdl
 read_vhdl ${TOP}.vhdl
 
-synth_design -top $TOP -part $PART \
-  -include_dirs "."
+synth_design -top $TOP -part $PART
 
 # Clocks
 set MBCLK_PERIOD       20.000
 create_clock -name CLK_MBCLK  -period $MBCLK_PERIOD [get_ports CLK_MBCLK]
-
-set COMPCLK [get_clocks -of_objects [get_pins -hier -filter {NAME=~*clk_compo/O}]]
-
-set FASTEST_CLK_PERIOD $MBCLK_PERIOD
-set CLK_SYSCLK [get_ports CLK_SYSCLK_P]
-if {[llength $CLK_SYSCLK]} then {
-  set INTCLK_PERIOD     5.000
-  create_clock -name CLK_SYSCLK -period $INTCLK_PERIOD $CLK_SYSCLK
-  set FASTEST_CLK_PERIOD [expr {min($FASTEST_CLK_PERIOD, $INTCLK_PERIOD)}]
-}
+set FASTEST_CLK_PERIOD 4.545
 
 # Cross-Clock FIFOs
 set_max_delay  -datapath_only -from [get_pins -hier -filter {NAME =~ *IPz_reg*/Q}] -to [get_pins -hier -filter {NAME =~ *IPs_reg*/D}] $FASTEST_CLK_PERIOD
@@ -123,6 +112,10 @@ set_property PACKAGE_PIN C11              [get_ports BUS_OUT_CLKN]
 
 set_property IOSTANDARD LVCMOS18          [get_ports CLK_MBCLK]
 set_property PACKAGE_PIN G24              [get_ports CLK_MBCLK]
+
+# Platform
+set_property CFGBVS GND [current_design]
+set_property CONFIG_VOLTAGE 1.8 [current_design]
 
 opt_design -retarget -propconst -sweep
 place_design -directive Explore
