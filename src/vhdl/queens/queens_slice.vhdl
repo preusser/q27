@@ -40,7 +40,7 @@ entity queens_slice is
     start : in std_logic;  -- Strobe for Start
     BH_l  : in std_logic_vector(0 to N-2*L-1);  -- Blocking for leftmost Column
     BU_l  : in std_logic_vector(0 to 2*N-4*L-2);
-    BD_l  : in std_logic_vector(0 to 2*N-4*L-2);  -- 0 to 6
+    BD_l  : in std_logic_vector(0 to 2*N-4*L-2);
     BV_l  : in std_logic_vector(0 to N-2*L-1);
 
     -- Output Strobes
@@ -80,13 +80,14 @@ architecture rtl of queens_slice is
   end component;
 
   -- Blocking Signals
-  signal BH : std_logic_vector(  L   to N-L-1)     := (others => '-');  -- Window: L to N-L-1
-  signal BV : std_logic_vector(2*L+1 to 2*N-2*L-1) := (others => '-');  -- Window: N
-                                                                        -- put shifts left
-  signal BU : std_logic_vector(2*L+1 to 3*N-4*L-2) := (others => '-');  -- Window: N to 2*N-2*L-1
-                                                                        -- put shifts right
-  signal BD : std_logic_vector(2*L+1 to 3*N-4*L-2) := (others => '-');  -- Window: N to 2*N-2*L-1
-                                                                        -- put shifts left
+  signal BH : std_logic_vector(L to N-L-1) := (others => '-');  -- Window: L to N-L-1
+  signal BV : std_logic_vector(L to N-L-1) := (others => '-');  -- Window: L
+																																-- put rotates left
+
+  signal BU : std_logic_vector(2*L to 2*N-2*L-2) := (others => '-'); -- Window: N-1 to 2*N-2*L-2
+                                                                     -- put rotates right
+  signal BD : std_logic_vector(2*L to 2*N-2*L-2) := (others => '-'); -- Window: 2*L to N-1
+                                                                     -- put rotates left
   signal s    : std_logic_vector(L to N-L-1);
   signal put  : std_logic;
 
@@ -94,148 +95,154 @@ begin
 
   assert false
     report LF&
-    "Queens@TUD Solver Slice " &LF&
-    "Copyright (C) 2015 Thomas B. Preusser <thomas.preusser@utexas.edu> " &LF&
-    "                   Benedikt Reuter    <breutr@gmail.com>" &LF&
-    "This design is free software, and you are welcome to redistribute it " &LF&
-    "under the conditions of the GPL version 3. " &LF&
-    "It comes with ABSOLUTELY NO WARRANTY. " &LF&
-    "For details see the notice in the file COPYING."&LF
+      "Queens@TUD Solver Slice [N="&integer'image(N)&", L="&integer'image(L)&']' &LF&
+      "Copyright (C) 2015-2016 Thomas B. Preusser <thomas.preusser@utexas.edu> " &LF&
+      "                        Benedikt Reuter    <breutr@gmail.com>" &LF&
+      "This design is free software, and you are welcome to redistribute it " &LF&
+      "under the conditions of the GPL version 3. " &LF&
+      "It comes with ABSOLUTELY NO WARRANTY. " &LF&
+      "For details see the notice in the file COPYING."&LF
     severity note;
 
-    ---------------------------------------------------------------------------
-    -- Queen Matrix
-    process(clk)
-    begin
-      if rising_edge(clk) then
-        if put = '1' then
-          QN(L to N-L-2) <= QN(L+1 to N-L-1);
-        else
-          QN(L to N-L-2) <= tColumn'(tColumn'range => '-') & QN(L to N-L-3);
-        end if;
-      end if;
+	----------------------------------------------------------------------------
+	-- Queen Matrix
+	process(clk)
+	begin
+		if rising_edge(clk) then
+			if put = '1' then
+				QN(L to N-L-2) <= QN(L+1 to N-L-1);
+			else
+				QN(L to N-L-2) <= tColumn'(tColumn'range => '-') & QN(L to N-L-3);
+			end if;
+		end if;
+	end process;
 
-    end process;
+	----------------------------------------------------------------------------
+	-- Blocking Signals
+	process(clk)
+		variable b : std_logic_vector(2*L to 2*N-2*L-2);
+	begin
+		if rising_edge(clk) then
+			-- Initialization
+			if start = '1' then
+				BH <= BH_l;
+				BV <= BV_l;
+				BU <= BU_l;
+				BD <= BD_l;
+			else
 
-    ---------------------------------------------------------------------------
-    -- Blocking Signals
+				-- In Progress
+				if put = '1' then
+					-- Add placed Queen
+					BH <= BH or s;
+					BV <= BV(BV'left+1 to BV'right) & BV(BV'left);
 
-    process(clk)
-    begin
-      if clk'event and clk = '1' then
-        -- Initialization
-        if start = '1' then
-          BH <= BH_l;
-          BV <= (BV'left to N-1 => '-') & BV_l;
-          BU <= BU_l & (2*N-2*L to BU'right => '-');
-          BD <= (BD'left to N-1 => '-') & BD_l;
-        else
+					b := BU(BU'left to N-2) & (BU(N-1 to BU'right) or s);
+					BU <= b(b'right) & b(b'left to b'right-1);
 
-          -- In Progress
-          if put = '1' then
-            -- Add placed Queen
-            BH <= BH or s;
-            BV <= BV(BV'left+1 to BV'right) & '-';
-            BU <= '-' & BU(BU'left to N-1) & (BU(N to 2*N-2*L-1) or s) & BU(2*N-2*L to BU'right-1);
-            BD <= BD(BD'left+1 to N-1) & (BD(N to 2*N-2*L-1) or s) & BD(2*N-2*L to BD'right) & '-';
-          else
-            -- Clear Queen
-            BH <= BH and not QN(N-L-2);
-            BV <= '-' & BV(BV'left to BV'right-1);
-            BU <= BU(BU'left+1 to N) & (BU(N+1 to 2*N-2*L) and not QN(N-L-2)) & BU(2*N-2*L+1 to BU'right) & '-';
-            BD <= '-' & BD(BD'left to N-2) & (BD(N-1 to 2*N-2*L-2) and not QN(N-L-2)) & BD(2*N-2*L-1 to BD'right-1);
-          end if;
+					b := (BD(BD'left to N-1) or s) & BD(N to BD'right);
+					BD <= b(b'left+1 to b'right) & b(b'left);
+				else
+					-- Clear Queen
+					BH <= BH and not QN(N-L-2);
+					BV <= BV(BV'right) & BV(BV'left to BV'right-1);
 
-        end if;
-      end if;
+					b := BU(BU'left+1 to BU'right) & BU(BU'left);
+					BU <= b(b'left to N-2) & (b(N-1 to b'right) and not QN(N-L-2));
 
-    end process;
+					b := BD(BD'right) & BD(BD'left to BD'right-1);
+					BD <= (b(b'left to N-1) and not QN(N-L-2)) & b(N to b'right);
+				end if;
 
-    ---------------------------------------------------------------------------
-    -- Placement Calculation
-    blkPlace : block
-      -- State
-      signal CS  : std_logic_vector(L to N-L-1) := (others => '0');  -- Column Front Selector
-      signal Fwd : std_logic                    := '-';  -- Direction
-      signal H   : std_logic_vector(L to N-L-1) := (others => '-');  -- Last Placement in active Col
+			end if;
+		end if;
+	end process;
 
-      -- Combined Blocking
-      signal pass : std_logic_vector(L to N-L-1);
-      signal tout : std_logic;
+	----------------------------------------------------------------------------
+	-- Placement Calculation
+	blkPlace : block
+		-- State
+		signal CS  : std_logic_vector(L to N-L-1) := (others => '0');  -- Column Front Selector
+		signal Fwd : std_logic                    := '-';  -- Direction
+		signal H   : std_logic_vector(L to N-L-1) := (others => '-');  -- Last Placement in active Col
 
-      signal st : std_logic_vector(L to N-L-1);
-      signal tt : std_logic;
+		-- Combined Blocking
+		signal pass : std_logic_vector(L to N-L-1);
+		signal tout : std_logic;
 
-    begin
-      -- Combine Blocking Signals
-      pass <= BH or BD(N to 2*N-2*L-1) or BU(N to 2*N-2*L-1);
+		signal st : std_logic_vector(L to N-L-1);
+		signal tt : std_logic;
 
-      col : arbit_forward
-        generic map (
-          N => N-2*L
-        )
-        port map (
-          tin  => Fwd,                  -- Richtung (=put)
-          have => H,                    -- FWD-> 000000 ; -FWD-> QN(N-2)
-          pass => pass,                 -- BH or BU or BD
-          grnt => st,
-          tout => tt  -- overflow (q(N)) -> Reihe fertig -> keine dame gesetzt
-        );
-      tout <= not Fwd         when BV(N) = '1' else tt;
-      s    <= (others => '0') when BV(N) = '1' else st;
+	begin
+		-- Combine Blocking Signals
+		pass <= BH or BD(2*L to N-1) or BU(N-1 to 2*N-2*L-2);
 
-      QN(N-L-1) <= s;
+		col : arbit_forward
+			generic map (
+				N => N-2*L
+      )
+			port map (
+				tin  => Fwd,                  -- Richtung (=put)
+				have => H,                    -- FWD-> 000000 ; -FWD-> QN(N-2)
+				pass => pass,                 -- BH or BU or BD
+				grnt => st,
+				tout => tt  -- overflow (q(N)) -> Reihe fertig -> keine dame gesetzt
+      );
+		tout <= not Fwd         when BV(L) = '1' else tt;
+		s    <= (others => '0') when BV(L) = '1' else st;
 
-      -- Column Front Selector, a shift-based counter with:
-      process(clk)
-      begin
-        if clk'event and clk = '1' then
-          if rst = '1' then
-            CS <= (others => '0');
-          elsif start = '1' then
-            CS          <= (others => '0');
-            CS(CS'left) <= '1';
-          else
-            if put = '1' then
-              CS <= '0' & CS(CS'left to CS'right-1);
-            else
-              CS <= CS(CS'left+1 to CS'right) & '0';
-            end if;
-          end if;
-        end if;
-      end process;
+		QN(N-L-1) <= s;
 
-      -- Direction Control
-      process(clk)
-      begin
-        if clk'event and clk = '1' then
-          if start = '1' or put = '1' then
-            H   <= (others => '0');
-            Fwd <= '1';
-          else
-            H   <= QN(N-L-2);
-            Fwd <= '0';
-          end if;
-        end if;
-      end process;
+		-- Column Front Selector, a shift-based counter with:
+		process(clk)
+		begin
+			if rising_edge(clk) then
+				if rst = '1' then
+					CS <= (others => '0');
+				elsif start = '1' then
+					CS          <= (others => '0');
+					CS(CS'left) <= '1';
+				else
+					if put = '1' then
+						CS <= '0' & CS(CS'left to CS'right-1);
+					else
+						CS <= CS(CS'left+1 to CS'right) & '0';
+					end if;
+				end if;
+			end if;
+		end process;
 
-      -- Control
-      put <= (not tout) and not CS(CS'right);
+		-- Direction Control
+		process(clk)
+		begin
+			if rising_edge(clk) then
+				if start = '1' or put = '1' then
+					H   <= (others => '0');
+					Fwd <= '1';
+				else
+					H   <= QN(N-L-2);
+					Fwd <= '0';
+				end if;
+			end if;
+		end process;
 
-      -- Outputs
-      process(clk)
-      begin
-        if clk'event and clk = '1' then
-          if rst = '1' or start = '1' then
-	    sol  <= '0';
-	    done <= '0';
-          else
-            sol  <= (not tout) and CS(CS'right);
-            done <= tout and CS(CS'left);
-          end if;
-        end if;
-      end process;
+		-- Control
+		put <= (not tout) and not CS(CS'right);
 
-    end block blkPlace;
+		-- Outputs
+		process(clk)
+		begin
+			if rising_edge(clk) then
+				if rst = '1' or start = '1' then
+					sol  <= '0';
+					done <= '0';
+				else
+					sol  <= (not tout) and CS(CS'right);
+					done <= tout and CS(CS'left);
+				end if;
+			end if;
+		end process;
+
+	end block blkPlace;
 
 end rtl;
