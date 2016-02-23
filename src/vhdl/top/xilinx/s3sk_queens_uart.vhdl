@@ -29,7 +29,7 @@ entity s3sk_queens_uart is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 8;
+    SOLVERS      : positive := 9;
     COUNT_CYCLES : boolean  := false;
 
     CLK_FREQ : positive := 50000000;
