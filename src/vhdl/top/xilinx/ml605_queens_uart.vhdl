@@ -32,13 +32,13 @@ entity ml605_queens_uart is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 125;
+    SOLVERS      : positive := 127;
     COUNT_CYCLES : boolean  := false;
 
     CLK_FREQ : FREQ     := 200 MHz;
     CLK_MULA : positive := 6;
     CLK_DIVA : positive := 1;
-    CLK_DIVB : positive := 6;
+    CLK_DIVB : positive := 7;
 
     BAUDRATE : positive                     := 115200;
     SENTINEL : std_logic_vector(7 downto 0) := x"FA"  -- Start Byte

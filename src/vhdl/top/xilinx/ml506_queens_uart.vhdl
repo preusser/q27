@@ -29,7 +29,7 @@ entity ml506_queens_uart is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 21;
+    SOLVERS      : positive := 23;
     COUNT_CYCLES : boolean  := false;
 
     CLK_FREQ : positive := 100000000;

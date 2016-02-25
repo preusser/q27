@@ -29,7 +29,7 @@ entity xupv5_queens_uart is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 51;
+    SOLVERS      : positive := 52;
     COUNT_CYCLES : boolean  := false;
 
     CLK_FREQ : positive := 100000000;
