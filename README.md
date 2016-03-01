@@ -38,6 +38,17 @@ The VHDL implementation builds upon the
 under the terms of the Apache 2.0 license.
 
 ## News
+**Jan 22, 2016**:
+The queens within the pre-placements advanced out of the overlap of west and
+south pre-placing region. This virtually **broke a sound barrier**! While,
+indeed, expecting an accelaration of the computation due to moving to more
+constrained pre-placements now typically comprising eight (8) queens, the
+observed **speedup of 10** was still an exciting surprise. Given the behavior
+observed for the [26-Queens Puzzle](http://queens.inf.tu-dresden.de/?n=r)
+as well as the 27-Queens Puzzle so far, a gradual slowdown must, however, be
+expected from here: subtaks seem to yield more solutions and take longer to
+compute as the pre-placed queens move closer to the center of their column.
+
 **Jan 11, 2016**:
 Triggered by the extremely different synthesis results obtained for
 essentially the same FPGA devices found on the KC705 and the DNK7 FPGAs boards,
@@ -102,9 +113,9 @@ FPGA resources.
    Count | Board | Family | Device | Solvers | Clock | SE
    ------|-------|--------|--------|---------|-------|-----
    1x    | VC707 | Xilinx Virtex-7      | XC7VX485T-2     | 325 | 250.0 MHz | 812
-         |(VC707)|(Xilinx Virtex-7)     |(XC7VX485T-2)    |(337)|(256.2 MHz)|(864)
-   1x    | KC705 | Xilinx Kintex-7      | XC7K325T-2      | 241 | 290.4 MHz | 700
-   1x    | ML605 | Xilinx Virtex-6      | XC6VLX240T-1    | 125 | 200.0 MHz | 250
+         |(VC707)|(Xilinx Virtex-7)     |(XC7VX485T-2)    |(360)|(248.0 MHz)|(892)
+   1x    | KC705 | Xilinx Kintex-7      | XC7K325T-2      | 250 | 284.4 MHz | 711
+   1x    | ML605 | Xilinx Virtex-6      | XC6VLX240T-1    | 127 | 171.4 MHz | 217
    2x    | DE4   | Altera Stratix IV GX | EP4SGX230KF40C2 | 125 | 250.0 MHz | 312
    4x    | DNK7_F5_PCIe| Xilinx Kintex-7| 5x XC7K325T   | 5x240 | 220.0 MHz |2640
 
