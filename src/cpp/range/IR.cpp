@@ -44,6 +44,16 @@ static class : public SPredicate {
 } PRED_SOLVED;
 std::shared_ptr<SPredicate> const  SPredicate::SOLVED(&PRED_SOLVED, [](void*){});
 
+static class : public SPredicate {
+  bool operator()(DBEntry const &e) const { return  e.wrapped(); }
+} PRED_WRAPPED;
+std::shared_ptr<SPredicate> const  SPredicate::WRAPPED(&PRED_WRAPPED, [](void*){});
+
+static class : public SPredicate {
+  bool operator()(DBEntry const &e) const { return  e.valid(); }
+} PRED_VALID;
+std::shared_ptr<SPredicate> const  SPredicate::VALID(&PRED_VALID, [](void*){});
+
 std::shared_ptr<SPredicate>
 SPredicate::createInverted(std::shared_ptr<SPredicate> const &target) {
 

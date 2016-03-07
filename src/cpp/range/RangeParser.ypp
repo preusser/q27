@@ -86,6 +86,13 @@ unsigned RangeParser::nextToken(YYSVal &sval) {
     }
     break;
 
+  case 'i':
+    if(strncmp(m_line, "valid", 5) == 0) {
+      m_line += 5;
+      return  VALID;
+    }
+    break;
+
   case 'l':
     if(strncmp(m_line, "last", 4) == 0) {
       m_line += 4;
@@ -104,6 +111,13 @@ unsigned RangeParser::nextToken(YYSVal &sval) {
     if(strncmp(m_line, "taken", 5) == 0) {
       m_line += 5;
       return  TAKEN;
+    }
+    break;
+
+  case 'w':
+    if(strncmp(m_line, "wrapped", 7) == 0) {
+      m_line += 7;
+      return  WRAPPED;
     }
     break;
 
@@ -159,7 +173,7 @@ void RangeParser::buildSpec(uint64_t &spec, unsigned &wild, SVal const &position
 } // impl
 
 %%
-%token FIRST LAST TAKEN SOLVED NUMBER
+%token FIRST LAST TAKEN SOLVED WRAPPED VALID NUMBER
 %start range
 %%
 range : addr {
@@ -231,8 +245,10 @@ addr : FIRST {
 		                     -static_cast<SNumber const&>(*$3));
        }
 
-pred : TAKEN  { $$ = SPredicate::TAKEN; }
-     | SOLVED { $$ = SPredicate::SOLVED; }
+pred : TAKEN   { $$ = SPredicate::TAKEN; }
+     | SOLVED  { $$ = SPredicate::SOLVED; }
+     | WRAPPED { $$ = SPredicate::WRAPPED; }
+     | VALID   { $$ = SPredicate::VALID; }
      | '!' pred {
 	$$ = SPredicate::createInverted(std::static_pointer_cast<SPredicate>($2));
        }

@@ -65,6 +65,8 @@ namespace queens {
       static std::shared_ptr<SPredicate> const  TRUE;
       static std::shared_ptr<SPredicate> const  TAKEN;
       static std::shared_ptr<SPredicate> const  SOLVED;
+      static std::shared_ptr<SPredicate> const  WRAPPED;
+      static std::shared_ptr<SPredicate> const  VALID;
       static std::shared_ptr<SPredicate>
       createInverted(std::shared_ptr<SPredicate> const &target);
 

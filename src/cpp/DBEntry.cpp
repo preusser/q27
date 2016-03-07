@@ -137,7 +137,11 @@ std::ostream& queens::operator<<(std::ostream &out, DBEntry const&  entry) {
     out << "\tINVALID";
   }
   if(DBEntry::wrapped(sol)) {
-    out << "\tWRAPPED[%13=" << std::setw(2) << DBEntry::mod13(sol) << ", %15=" << std::setw(2) << DBEntry::mod15(sol) << ']';
+    unsigned const  m13 = DBEntry::mod13(sol);
+    unsigned const  m15 = DBEntry::mod15(sol);
+    uint64_t cand = DBEntry::count(sol);
+    while((cand%13 != m13) || (cand%15 != m15))  cand += UINT64_C(1)<<44;
+    out << "\tWRAPPED[%13=" << std::setw(2) << m13 << ", %15=" << std::setw(2) << m15 << " -> " << cand << ']';
   }
   return  out;
 
