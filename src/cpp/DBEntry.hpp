@@ -154,6 +154,7 @@ namespace queens {
   public:
     void take()   { timestamp(); }
     void untake() { m_spec &= ~UINT64_C(0xFFFFF); }
+    void unsolve(){ untake(); m_sol = 0; }
 
     /**
      * Sets the solution and timestamp fields of this DBEntry

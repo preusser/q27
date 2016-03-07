@@ -200,6 +200,24 @@ namespace {
 
   }  // untake()
 
+  int unsolve(Database &dbx, int const  argc, char const *const  argv[]) {
+    if((argc != 1) || (strcmp(*argv, "-f") != 0)) {
+      std::cerr << "Refusing to unsolve database without explicit '-f' switch." << std::endl;
+      return  1;
+    }
+    DBRange  db(dbx.rwRange());
+    uint64_t  cnt = 0L;
+    for(DBEntry &e : db) {
+      if(e.taken() || e.solved()) {
+        e.unsolve();
+        cnt++;
+      }
+    }
+    std::cout << cnt << " entries unsolved." << std::endl;
+    return  0;
+
+  }  // unsolve()
+
   int merge(Database &dbx, int const  argc, char const *const  argv[]) {
     DBRange  db(dbx.rwRange());
     if(argc == 2) {
@@ -304,6 +322,7 @@ namespace {
     {"slice",  slice,  boost::iostreams::mapped_file::readonly},
     {"stats",  stats,  boost::iostreams::mapped_file::readonly},
     {"untake", untake, boost::iostreams::mapped_file::readwrite},
+    {"unsolve",unsolve,boost::iostreams::mapped_file::readwrite},
     {"merge",  merge,  boost::iostreams::mapped_file::readwrite}
   };
 
