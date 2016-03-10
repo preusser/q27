@@ -1,7 +1,30 @@
+-- EMACS settings: -*-  tab-width: 2; indent-tabs-mode: t -*-
+-- vim: tabstop=2:shiftwidth=2:noexpandtab
+-- kate: tab-width 2; replace-tabs off; indent-width 2;
+-------------------------------------------------------------------------------
+-- This file is part of the Queens@TUD solver suite
+-- for enumerating and counting the solutions of an N-Queens Puzzle.
+--
+-- Copyright (C) 2008-2016
+--      Thomas B. Preusser <thomas.preusser@utexas.edu>
+-------------------------------------------------------------------------------
+-- This testbench is free software: you can redistribute it and/or modify
+-- it under the terms of the GNU Affero General Public License as published
+-- by the Free Software Foundation, either version 3 of the License, or
+-- (at your option) any later version.
+--
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU Affero General Public License for more details.
+--
+-- You should have received a copy of the GNU Affero General Public License
+-- along with this design.  If not, see <http://www.gnu.org/licenses/>.
+-------------------------------------------------------------------------------
+
 entity queens_slice_tb is
   generic (
-    N : positive := 12;                 -- size of field
-    L : positive := 2                   -- number of preplaced columns
+    N : positive := 12  -- size of field: tests for 8, 9, 11, 12 available
   );
 end queens_slice_tb;
 
@@ -11,6 +34,9 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 architecture tb of queens_slice_tb is
+
+  constant L : natural := 2;  -- pre-placed rings:
+                              --   testbench only supports 2 currently
 
   type tTest is record
                   cnt : positive;
@@ -586,8 +612,8 @@ architecture tb of queens_slice_tb is
 
   component queens_slice
     generic (
-      N : positive := 8;                -- size of field
-      L : positive := 2                 -- number of preplaced columns
+      N : positive;                     -- size of field
+      L : positive                      -- number of preplaced columns
     );
     port (
       clk   : IN  std_logic;

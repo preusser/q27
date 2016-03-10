@@ -29,7 +29,7 @@ use IEEE.std_logic_1164.all;
 entity queens_slice is
   generic (
     N : positive;                       -- size of field
-    L : positive                        -- number of preplaced outer rings
+    L : natural                         -- number of preplaced outer rings
   );
   port (
     -- Global Clock
