@@ -51,26 +51,21 @@ begin
   q(0) <= have(0) or (tin and pass(0));
   MUXCY_inst : MUXCY
     port map (
-      O  => q(1),               -- Carry output signal
-      CI => '1',                -- Carry input signal
-      DI => '0',                -- Data input signal
-      S  => q(0)                -- MUX select
+      O  => q(1),
+      CI => '1',
+      DI => '0',
+      S  => q(0)
     );
-  grnt(0) <= tin and not pass(0);
+  grnt(0) <= tin and not q(1);
 
-  genChain: for i in 1 to N-1 generate
-    signal p : std_logic;
-  begin
-    --q(i+1) <= have(i) or (q(i) and pass(i));
-    p <= pass(i) and not have(i);
+  genChain : for i in 1 to N-1 generate
     MUXCY_inst : MUXCY
       port map (
-        O  => q(i+1),                 -- Carry output signal
-        CI => q(i),                   -- Carry input signal
-        DI => have(i),                -- Data input signal
-        S  => p                      -- MUX select
+        O  => q(i+1),
+        CI => q(i),
+        DI => have(i),
+        S  => pass(i)
       );
-
     grnt(i) <= q(i) and not q(i+1);
   end generate;
   tout <= q(N);

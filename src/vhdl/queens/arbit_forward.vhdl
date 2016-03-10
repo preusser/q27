@@ -50,7 +50,7 @@ architecture rtl of arbit_forward is
 begin
 
   genAddends: for i in 0 to N-1 generate
-    a(i) <= have(i) or pass(i);
+    a(i) <= have(i) xor pass(i);
     b(i) <= have(i);
   end generate genAddends;
   s <= ('0' & a) + b + (0 to 0 => tin);
