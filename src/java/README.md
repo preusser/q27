@@ -4,12 +4,14 @@ The Java-implemented backbone infrastructure comprises a central
 [Server](me/preusser/q27/Server.java) and an attaching
 [Client](me/preusser/q27/Client.java). They communicate through
 a TLS-secured TCP channel with mutual authentication:
+
 1. The Server hands out subproblems upon the request from a Client.
-2. The Client relays assigned subproblems to the attached FPGA
-   solvers, eventually receives the solution count to forward it
-   to the Server.
-3. The Server logs a completed subproblem to the manages Q27
-   database.
+2. The Client relays assigned subproblems to the attached FPGA solvers, eventually receives the solution count to forward it to the Server.
+3. The Server logs a completed subproblem to the manages Q27 database.
+
+# Requirements
+
+1. [Java 8 SE](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 
 # Authentication
 
