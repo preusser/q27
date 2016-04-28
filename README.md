@@ -3,12 +3,14 @@
 The Q27 Project is a showcase for a massively parallel computation to tackle
 an otherwise infeasible problem. It demonstrates the tremendous computational
 power of designated circuit designs implemented on FPGA accelerators at the
-example of enumerating and couting all the valid solutions of the
+example of enumerating and counting all the valid solutions of the
 27-[Queens Puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle). 
 
-[Pitch Presentation](pitch.pdf)
+## Further Reading
+* Pitch Presentation: [Putting Queens in Carry Chains &mdash; No. 27 &mdash;](pitch.pdf).
+* Xcell Daily Blog: [Solving the N-Queens Puzzle for 27 Queens using FPGAs](https://forums.xilinx.com/t5/Xcell-Daily-Blog/Solving-the-N-Queens-Puzzle-for-27-Queens-using-FPGAs/ba-p/692248).
 
-# Sponsors
+# Sponsors and Partners
 
 **Wanted**: If you are willing to **contribute compute time** on your own
 hardware or even to **donate devices**, please contact
