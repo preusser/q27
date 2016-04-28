@@ -9,15 +9,13 @@ example of enumerating and counting all the valid solutions of the
 ## Further Reading
 * Pitch Presentation: [Putting Queens in Carry Chains &mdash; No. 27 &mdash;](pitch.pdf).
 * Xcell Daily Blog: [Solving the N-Queens Puzzle for 27 Queens using FPGAs](https://forums.xilinx.com/t5/Xcell-Daily-Blog/Solving-the-N-Queens-Puzzle-for-27-Queens-using-FPGAs/ba-p/692248).
+* [**Life Computation Status**](https://palios.inf.tu-dresden.de/q27status.php).
 
 # Sponsors and Partners
 
 **Wanted**: If you are willing to **contribute compute time** on your own
 hardware or even to **donate devices**, please contact
 thomas.preusser@tu-dresden.de.
-
-Have a look at the
-[**life computation status**](https://palios.inf.tu-dresden.de/q27status.php)!
 
 Table of Contents
 -----------------
