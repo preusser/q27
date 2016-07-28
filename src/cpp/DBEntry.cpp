@@ -32,6 +32,14 @@ char const *DBEntry::check() const {
   return  0;
 }
 
+unsigned DBEntry::queens(uint64_t _spec) {
+  unsigned  res = 0;
+  for(_spec >>= 25; _spec != 0; _spec >>= 5) {
+    if((_spec & 0x1F) > 1)  res++;
+  }
+  return  res;
+}
+
 void DBEntry::timestamp() {
   time_t rawtime;
   ::time(&rawtime);

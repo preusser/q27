@@ -312,6 +312,24 @@ namespace {
 
   } // print()
 
+  int queens(Database &dbx, int const  argc, char const *const  argv[]) {
+    unsigned  len = 0;
+    unsigned  prv = 0;
+    for(DBEntry const &e : dbx.roRange()) {
+      unsigned const  q = e.queens();
+      if(q == prv)  len++;
+      else {
+	if(len > 1)  std::cout << ' ' << len;
+	std::cout << std::endl << q;
+	len = 1;
+	prv = q;
+      }
+    }
+    if(len > 1)  std::cout << ' ' << len;
+    std::cout << std::endl;
+    return  0;
+  } // queens()
+
   struct {
     char const *cmd;
     int(*fct)(Database&, int, char const*const*);
@@ -321,6 +339,7 @@ namespace {
     {"print",  print,  boost::iostreams::mapped_file::readonly},
     {"slice",  slice,  boost::iostreams::mapped_file::readonly},
     {"stats",  stats,  boost::iostreams::mapped_file::readonly},
+    {"queens", queens, boost::iostreams::mapped_file::readonly},
     {"untake", untake, boost::iostreams::mapped_file::readwrite},
     {"unsolve",unsolve,boost::iostreams::mapped_file::readwrite},
     {"merge",  merge,  boost::iostreams::mapped_file::readwrite}

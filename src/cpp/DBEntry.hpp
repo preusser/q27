@@ -107,6 +107,7 @@ namespace queens {
     static uint64_t spec (uint64_t _spec) { return (_spec >> 20)&UINT64_C(0xFFFFFFFFFFF); }
     static Symmetry sym  (uint64_t _spec) { return (_spec >> 23)&3; }
     static bool     valid(uint64_t _spec) { return  crc3(_spec >> 20) == 0; }
+    static unsigned queens(uint64_t _spec);
 
     static unsigned year (uint64_t _spec) { return ((_spec >> 18)&3) + 2015; }
     static unsigned month(uint64_t _spec) { return (_spec >> 14)&15; }
@@ -131,6 +132,7 @@ namespace queens {
     uint64_t spec () const { return  spec (m_spec); }
     Symmetry sym  () const { return  sym  (m_spec); }
     bool     valid() const { return  valid(m_spec); }
+    unsigned queens()const { return  queens(m_spec);}
     unsigned year () const { return  year (m_spec); }
     unsigned month() const { return  month(m_spec); }
     unsigned day  () const { return  day  (m_spec); }
