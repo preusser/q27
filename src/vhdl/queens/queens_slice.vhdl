@@ -163,34 +163,28 @@ begin
 	blkPlace : block
 		-- State
 		signal CS  : std_logic_vector(L to N-L-1) := (others => '0');  -- Column Front Selector
-		signal Fwd : std_logic                    := '-';  -- Direction
+		signal Ins : std_logic                    := '-';  -- Direction
 		signal H   : std_logic_vector(L to N-L-1) := (others => '-');  -- Last Placement in active Col
 
 		-- Combined Blocking
 		signal pass : std_logic_vector(L to N-L-1);
 		signal tout : std_logic;
 
-		signal st : std_logic_vector(L to N-L-1);
-		signal tt : std_logic;
-
 	begin
 		-- Combine Blocking Signals
-		pass <= BH or BD(2*L to N-1) or BU(N-1 to 2*N-2*L-2);
+		pass <= BH or BD(2*L to N-1) or BU(N-1 to 2*N-2*L-2) when BV(L) = '0' else (others => '1');
 
 		col : arbit_forward
 			generic map (
 				N => N-2*L
       )
 			port map (
-				tin  => Fwd,                  -- Richtung (=put)
-				have => H,                    -- FWD-> 000000 ; -FWD-> QN(N-2)
-				pass => pass,                 -- BH or BU or BD
-				grnt => st,
-				tout => tt  -- overflow (q(N)) -> Reihe fertig -> keine dame gesetzt
+				tin  => Ins,
+				have => H,
+				pass => pass,
+				grnt => s,
+				tout => tout
       );
-		tout <= not Fwd         when BV(L) = '1' else tt;
-		s    <= (others => '0') when BV(L) = '1' else st;
-
 		QN(N-L-1) <= s;
 
 		-- Column Front Selector, a shift-based counter with:
@@ -216,12 +210,15 @@ begin
 		process(clk)
 		begin
 			if rising_edge(clk) then
-				if start = '1' or put = '1' then
+				if start = '1' then
 					H   <= (others => '0');
-					Fwd <= '1';
+					Ins <= not BV_l(BV_l'left);
+				elsif put = '1' then
+					H   <= (others => '0');
+					Ins <= not BV(L+1);
 				else
 					H   <= QN(N-L-2);
-					Fwd <= '0';
+					Ins <= BV(BV'right);
 				end if;
 			end if;
 		end process;
