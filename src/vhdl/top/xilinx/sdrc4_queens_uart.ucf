@@ -1,0 +1,13 @@
+CONFIG PART = XC4VLX160-FF1148-10;
+
+NET "clkx" TNM_NET = "clkx";
+TIMESPEC "TS_clkx" = PERIOD "clkx" 62.5 ns HIGH 50 %;
+
+NET "clkx"      LOC = "F18" | IOSTANDARD = LVCMOS33 ;
+NET "rstx"      LOC = "H7"  | IOSTANDARD = LVCMOS33 ;
+
+NET "rx"        LOC="N4" | IOSTANDARD = LVCMOS33 ;
+NET "tx"        LOC="N3" | IOSTANDARD = LVCMOS33 ;
+
+NET  "cts"      LOC="N2" | IOSTANDARD = LVCMOS33 ;
+NET  "rts"      LOC="P4" | IOSTANDARD = LVCMOS33 ;
