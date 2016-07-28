@@ -23,9 +23,6 @@
 -------------------------------------------------------------------------------
 
 entity queens_slice_tb is
-  generic (
-    N : positive := 12  -- size of field: tests for 8, 9, 11, 12 available
-  );
 end queens_slice_tb;
 
 
@@ -47,7 +44,7 @@ architecture tb of queens_slice_tb is
                 end record tTest;
   type tTests is array (natural range<>) of tTest;
 
-  function selectTests return tTests is
+  function selectTests(s : positive) return tTests is
     constant TESTS_8 : tTests := (
       (      1 , 10,12,27,41),
       (      1 , 10,12,82,25),
@@ -598,17 +595,16 @@ architecture tb of queens_slice_tb is
       (      1 , 99,45,25626,13105 )
     );
   begin
-    case N is
+    case s is
       when  8 => return  TESTS_8;
       when  9 => return  TESTS_9;
       when 11 => return  TESTS_11;
       when 12 => return  TESTS_12;
       when others => null;
     end case;
-    report "Unsupported problem size "&integer'image(N)&'.'
+    report "Unsupported problem size "&integer'image(s)&'.'
       severity failure;
   end;
-  constant TESTS : tTests := selectTests;
 
   component queens_slice
     generic (
@@ -628,116 +624,125 @@ architecture tb of queens_slice_tb is
     );
   end component;
 
-  --Inputs
-  signal clk   : std_logic;
-  signal rst   : std_logic;
-  signal start : std_logic;
-  signal bh    : std_logic_vector(0 to N-2*L-1);
-  signal bv    : std_logic_vector(0 to N-2*L-1);
-  signal bu    : std_logic_vector(0 to 2*N-4*L-2);
-  signal bd    : std_logic_vector(0 to 2*N-4*L-2);
-
-  --Outputs
-  signal sol  : std_logic;
-  signal done : std_logic;
-
    -- Clock period definitions
   constant clk_period : time := 10 ns;
 
-  signal nxt : boolean;
-
 begin
 
-  dut: queens_slice
-     generic map (
-       N => N,
-       L => L
-     )
-     port map (
-       clk   => clk,
-       rst   => rst,
-       start => start,
-       BH_l  => bh,
-       BV_l  => bv,
-       BU_l  => bu,
-       BD_l  => bd,
-       sol   => sol,
-       done  => done
-     );
+	genSizes: for s in 8 to 12 generate
+		genFilter: if s /= 10 generate
+			constant TESTS : tTests := selectTests(s);
 
-   -- Stimuli
-   process
-     procedure cycle is
-     begin
-       clk <= '0';
-       wait for clk_period/2;
-       clk <= '1';
-       wait for clk_period/2;
-     end;
-   begin
-     rst   <= '1';
-     cycle;
-     rst   <= '0';
-     start <= '0';
-     cycle;
+			--Inputs
+			signal clk   : std_logic;
+			signal rst   : std_logic;
+			signal start : std_logic;
+			signal bh    : std_logic_vector(0 to s-2*L-1);
+			signal bv    : std_logic_vector(0 to s-2*L-1);
+			signal bu    : std_logic_vector(0 to 2*s-4*L-2);
+			signal bd    : std_logic_vector(0 to 2*s-4*L-2);
 
-     for i in TESTS'range loop
+			--Outputs
+			signal sol  : std_logic;
+			signal done : std_logic;
 
-       bh    <= std_logic_vector(to_unsigned(TESTS(i).bh, bh'length));
-       bv    <= std_logic_vector(to_unsigned(TESTS(i).bv, bv'length));
-       bu    <= std_logic_vector(to_unsigned(TESTS(i).bu, bu'length));
-       bd    <= std_logic_vector(to_unsigned(TESTS(i).bd, bd'length));
-       start <= '1';
-       cycle;
+			-- Test Control
+			signal nxt : boolean;
+		begin
 
-       bh    <= (others => '-');
-       bv    <= (others => '-');
-       bu    <= (others => '-');
-       bd    <= (others => '-');
-       start <= '0';
+			dut: queens_slice
+				generic map (
+					N => s,
+					L => L
+				)
+				port map (
+					clk   => clk,
+					rst   => rst,
+					start => start,
+					BH_l  => bh,
+					BV_l  => bv,
+					BU_l  => bu,
+					BD_l  => bd,
+					sol   => sol,
+					done  => done
+				);
 
-       loop
-         cycle;
-         exit when nxt;
-       end loop;
-     end loop;
+			-- Stimuli
+			process
+				procedure cycle is
+				begin
+					clk <= '0';
+					wait for clk_period/2;
+					clk <= '1';
+					wait for clk_period/2;
+				end;
+			begin
+				rst   <= '1';
+				cycle;
+				rst   <= '0';
+				start <= '0';
+				cycle;
 
-     wait;  -- forever
-   end process;
+				for i in TESTS'range loop
 
-   -- Checker
-   process
-     variable err : natural;
-     variable cnt : natural;
-   begin
-     err := 0;
-     for i in TESTS'range loop
-       nxt <= true;
-       wait until rising_edge(clk) and start = '1';
-       nxt <= false;
+					bh    <= std_logic_vector(to_unsigned(TESTS(i).bh, bh'length));
+					bv    <= std_logic_vector(to_unsigned(TESTS(i).bv, bv'length));
+					bu    <= std_logic_vector(to_unsigned(TESTS(i).bu, bu'length));
+					bd    <= std_logic_vector(to_unsigned(TESTS(i).bd, bd'length));
+					start <= '1';
+					cycle;
 
-       cnt := 0;
-       loop
-         wait until rising_edge(clk);
-         if sol = '1' then
-           cnt := cnt + 1;
-         end if;
-         exit when done = '1';
-       end loop;
-       if cnt /= TESTS(i).cnt then
-         report "Result mismatch in test case #"&integer'image(i)&": "&
-                integer'image(TESTS(i).cnt)&" -> "&integer'image(cnt)
-           severity error;
-         err := err + 1;
-       end if;
-     end loop;
+					bh    <= (others => '-');
+					bv    <= (others => '-');
+					bu    <= (others => '-');
+					bd    <= (others => '-');
+					start <= '0';
 
-     if err = 0 then
-       report "Test completed successfully." severity note;
-     else
-       report "Test completed with "&integer'image(err)&" errors." severity note;
-     end if;
+					loop
+						cycle;
+						exit when nxt;
+					end loop;
+				end loop;
 
-   end process;
+				wait;  -- forever
+			end process;
+
+			-- Checker
+			process
+				variable err : natural;
+				variable cnt : natural;
+			begin
+				err := 0;
+				for i in TESTS'range loop
+					nxt <= true;
+					wait until rising_edge(clk) and start = '1';
+					nxt <= false;
+
+					cnt := 0;
+					loop
+						wait until rising_edge(clk);
+						if sol = '1' then
+							cnt := cnt + 1;
+						end if;
+						exit when done = '1';
+					end loop;
+					if cnt /= TESTS(i).cnt then
+						report "Result mismatch in test case #"&integer'image(i)&": "&
+							integer'image(TESTS(i).cnt)&" -> "&integer'image(cnt)
+							severity error;
+						err := err + 1;
+					end if;
+				end loop;
+
+				if err = 0 then
+					report "Test [N="&integer'image(s)&", L="&integer'image(L)&"] completed successfully." severity note;
+				else
+					report "Test [N="&integer'image(s)&", L="&integer'image(L)&"] completed with "&integer'image(err)&" ERRORS." severity note;
+				end if;
+
+			end process;
+
+		end generate;
+	end generate;
 
 end tb;
