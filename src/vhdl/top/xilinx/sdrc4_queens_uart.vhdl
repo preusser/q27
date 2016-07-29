@@ -29,7 +29,7 @@ entity sdrc4_queens_uart is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 72;
+    SOLVERS      : positive := 79;
     COUNT_CYCLES : boolean  := false;
 
     CLK_FREQ : positive := 16000000;
