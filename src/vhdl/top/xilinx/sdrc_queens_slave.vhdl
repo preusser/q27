@@ -10,7 +10,7 @@ entity sdrc_queens_slave is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 90;
+    SOLVERS      : positive := 91;
     COUNT_CYCLES : boolean  := false;
 
     -- Local Clock Parameters
@@ -74,11 +74,11 @@ architecture rtl of sdrc_queens_slave is
 
   ----------------------------------------------------------------------------
   -- Global Control: Clocks and Resets
-  signal clk_comp : std_logic; -- FRESHLY generated:
-  signal rst_comp : std_logic; --   Fast Computation Clock
+  signal clk_comp : std_logic; -- Computation Clock
+  signal rst_comp : std_logic;
 
-  signal clk_out : std_logic;  -- FRESHLY generated:
-  signal rst_out : std_logic;  --   Slow Communication Clock (Output Side)
+  signal clk_out : std_logic;  -- Communication Clock (Output Side)
+  signal rst_out : std_logic;
 
   -----------------------------------------------------------------------------
   -- Solver Chain Connectivity
@@ -115,7 +115,6 @@ begin
 
   begin
 
-    ---------------------------------------------------------------------------
     -- 16 MHz Board Clock -> Computation Clock
     clk16_buf : IBUFG
       port map (
