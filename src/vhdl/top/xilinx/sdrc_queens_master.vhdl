@@ -10,7 +10,7 @@ entity sdrc_queens_master is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 75;
+    SOLVERS      : positive := 90;
     COUNT_CYCLES : boolean  := false;
 
     -- Local Clock Parameters
