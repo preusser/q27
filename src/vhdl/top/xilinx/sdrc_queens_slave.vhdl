@@ -10,7 +10,7 @@ entity sdrc_queens_slave is
     N : positive := 27;
     L : positive :=  2;
 
-    SOLVERS      : positive := 91;
+    SOLVERS      : positive := 90;
     COUNT_CYCLES : boolean  := false;
 
     -- Local Clock Parameters
@@ -259,7 +259,7 @@ begin
     -- Reading the Bus
 
     -- Clock reconstruction
-    blkClock: block
+    blkClock : block
       signal clk_in0 : std_logic;
     begin
       IBUFGDS_inst : IBUFGDS
@@ -268,10 +268,12 @@ begin
           I  => BUS_IN_CLKP,
           IB => BUS_IN_CLKN
         );
-      BUFG_inst : BUFG
+      BUFG_inst : BUFR
         port map (
-          O => clk_in,
-          I => clk_in0
+          I   => clk_in0,
+          O   => clk_in,
+          CE  => '1',
+          CLR => '0'
         );
       rst_in <= '0';
     end block blkClock;

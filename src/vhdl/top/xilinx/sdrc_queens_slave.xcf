@@ -1,3 +1,0 @@
-BEGIN MODEL unframe
-  NET CRC_next KEEP = true ;
-END;
