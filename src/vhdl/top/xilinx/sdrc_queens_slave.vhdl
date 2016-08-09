@@ -30,25 +30,29 @@ entity sdrc_queens_slave is
     BUS_IN_CLKP  : in  std_logic;
     BUS_IN_CLKN  : in  std_logic;
 
-    BUS_IN_PRE_DAT   : in  std_logic_vector(8 downto 0);
-    BUS_IN_PRE_PUT   : in  std_logic;
-    BUS_IN_PRE_STALL : out std_logic;
+    BUS_IN_PRE_DAT : in	 std_logic_vector(8 downto 0);
+    BUS_IN_PRE_PUT : in	 std_logic;
+    BUS_IN_PRE_GO  : out std_logic;
 
-    BUS_IN_SOL_DAT   : in  std_logic_vector(8 downto 0);
-    BUS_IN_SOL_PUT   : in  std_logic;
-    BUS_IN_SOL_STALL : out std_logic;
+    BUS_IN_SOL_DAT : in	 std_logic_vector(8 downto 0);
+    BUS_IN_SOL_PUT : in	 std_logic;
+    BUS_IN_SOL_GO  : out std_logic;
 
     -- Output
     BUS_OUT_CLKP  : out std_logic;
     BUS_OUT_CLKN  : out std_logic;
 
-    BUS_OUT_PRE_DAT   : out std_logic_vector(8 downto 0);
-    BUS_OUT_PRE_PUT   : out std_logic;
-    BUS_OUT_PRE_STALL : in  std_logic;
+    BUS_OUT_PRE_DAT : out std_logic_vector(8 downto 0);
+    BUS_OUT_PRE_PUT : out std_logic;
+    BUS_OUT_PRE_GO  : in  std_logic;
 
-    BUS_OUT_SOL_DAT   : out std_logic_vector(8 downto 0);
-    BUS_OUT_SOL_PUT   : out std_logic;
-    BUS_OUT_SOL_STALL : in  std_logic
+    BUS_OUT_SOL_DAT : out std_logic_vector(8 downto 0);
+    BUS_OUT_SOL_PUT : out std_logic;
+    BUS_OUT_SOL_GO  : in  std_logic;
+
+    ---------------------------------------------------------------------------
+    -- State
+    led : out std_logic_vector(3 downto 0)
   );
 end sdrc_queens_slave;
 
@@ -170,6 +174,7 @@ begin
       );
     rst_out <= '0';
 
+    led(0) <= locked_comp;
   end block blkClock;
 
   ---------------------------------------------------------------------------
@@ -319,7 +324,7 @@ begin
         valid            => pivld
       );
     piput <= pivld and not piful;
-    BUS_IN_PRE_STALL <= '1' when InPreCap = (InPreCap'range => '0') else '0';
+    BUS_IN_PRE_GO <= '0' when InPreCap = (InPreCap'range => '0') else '1';
 
     -- Input FIFO (ic): Solutions
     buf_sol : fifo_ic_got
@@ -343,7 +348,7 @@ begin
         dout(7 downto 0) => sidat,
         valid            => sivld
       );
-    BUS_IN_SOL_STALL <= '1' when InSolCap = (InSolCap'range => '0') else '0';
+    BUS_IN_SOL_GO <= '0' when InSolCap = (InSolCap'range => '0') else '1';
 
   end block blkInput;
 
@@ -384,8 +389,8 @@ begin
 
     blkPre: block
 
-      -- Syncing the stall input
-      signal stall_s : std_logic_vector(1 downto 0) := (others => '1');
+      -- Syncing the go input
+      signal go_s : std_logic_vector(1 downto 0) := (others => '0');
 
       -- Output FIFO
       signal pgot : std_logic;
@@ -398,14 +403,14 @@ begin
 
     begin
     
-      -- Syncing stall input
+      -- Syncing go input
       process(clk_out)
       begin
         if rising_edge(clk_out) then
           if rst_out = '1' then
-            stall_s <= (others => '1');
+            go_s <= (others => '0');
           else
-            stall_s <= BUS_OUT_PRE_STALL & stall_s(stall_s'left downto 1);
+            go_s <= BUS_OUT_PRE_GO & go_s(go_s'left downto 1);
           end if;
         end if;
       end process;
@@ -430,7 +435,7 @@ begin
           dout   => pdat,
           valid  => pvld
         );
-      pgot  <= pvld and not stall_s(0);
+      pgot  <= pvld and go_s(0);
 
       -- Output Registers
       process(clk_out)
@@ -452,8 +457,8 @@ begin
 
     blkSol: block
 
-      -- Syncing the stall input
-      signal stall_s : std_logic_vector(1 downto 0) := (others => '1');
+      -- Syncing the go input
+      signal go_s : std_logic_vector(1 downto 0) := (others => '0');
 
       -- Chain -> fifo_ic [clk_comp->clk_out]
       signal soful : std_logic;
@@ -479,14 +484,14 @@ begin
 
     begin
 
-      -- Syncing stall input
+      -- Syncing go input
       process(clk_out)
       begin
         if rising_edge(clk_out) then
           if rst_out = '1' then
-            stall_s <= (others => '1');
+            go_s <= (others => '0');
           else
-            stall_s <= BUS_OUT_SOL_STALL & stall_s(stall_s'left downto 1);
+            go_s <= BUS_OUT_SOL_GO & go_s(go_s'left downto 1);
           end if;
         end if;
       end process;
@@ -554,7 +559,7 @@ begin
           do  => sfdat,
           got => sfgot
         );
-      sfgot  <= sfvld and not stall_s(0);
+      sfgot  <= sfvld and go_s(0);
 
       -- Output Registers
       process(clk_out)
@@ -575,5 +580,7 @@ begin
     end block blkSol;
 
   end block blkOutput;
+
+  led(3 downto 1) <= "110";
 
 end rtl;
