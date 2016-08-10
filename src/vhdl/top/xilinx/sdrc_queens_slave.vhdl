@@ -15,8 +15,8 @@ entity sdrc_queens_slave is
 
     -- Local Clock Parameters
     CLK_FREQ : FREQ	:= 16 MHz;	-- external clock
-    CLK_MUL  : positive := 23;		-- computation clock:
-    CLK_DIV  : positive :=  3		--    CLK_FREQ / CLK_DIV * CLK_MUL
+    CLK_MUL  : positive := 31;		-- computation clock:
+    CLK_DIV  : positive :=  4		--    CLK_FREQ / CLK_DIV * CLK_MUL
   );
   port (
     ---------------------------------------------------------------------------
