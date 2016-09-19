@@ -38,6 +38,9 @@ The VHDL implementation builds upon the
 under the terms of the Apache 2.0 license.
 
 ## News
+**Sep 19, 2016**:
+Mission completed - there are **234907967154122528** solutions of the 27-Queens Puzzle. 29363791967678199, i.e. very slightly more than an eighth, of them had actually to be discovered by the computation running for slightly more than a year.
+
 **Jan 22, 2016**:
 The queens within the pre-placements advanced out of the overlap of west and
 south pre-placing region. This virtually **broke a sound barrier**! While,
