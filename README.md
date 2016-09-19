@@ -1,3 +1,5 @@
+# Mission Accomplished
+
 This FPGA computation has raised the bar:
 
   **Q(27) = 234907967154122528**
