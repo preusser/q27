@@ -19,13 +19,7 @@ example of enumerating and counting all the valid solutions of the
 ## Further Reading
 * Pitch Presentation: [Putting Queens in Carry Chains &mdash; No. 27 &mdash;](pitch.pdf).
 * Xcell Daily Blog: [Solving the N-Queens Puzzle for 27 Queens using FPGAs](https://forums.xilinx.com/t5/Xcell-Daily-Blog/Solving-the-N-Queens-Puzzle-for-27-Queens-using-FPGAs/ba-p/692248).
-* [**Life Computation Status**](https://palios.inf.tu-dresden.de/q27status.php).
-
-# Sponsors and Partners
-
-**Wanted**: If you are willing to **contribute compute time** on your own
-hardware or even to **donate devices**, please contact
-thomas.preusser@tu-dresden.de.
+* [**Full Computation Logs**](https://palios.inf.tu-dresden.de/q27status.php).
 
 Table of Contents
 -----------------
@@ -33,6 +27,7 @@ Table of Contents
  2. [News](#news)
  2. [Purpose](#purpose)
  3. [How to Contribute](#how-to-contribute)
+ 3. [Used Hardware](#hardware-used-by-the-q27-project)
  4. [Things To Do Alongside](#things-to-do-alongside)
 
 ------------------------------------------------------------------------------
@@ -111,17 +106,17 @@ FPGA resources.
    infrastructure.
 
 ## How to Contribute
+Since we are through with the computation, the interesting remaing question is whether or not we are right.
+An **independent confirmation** of the result would be great. While Q(26) was confirmed less than two months
+later by a competing second effort using to Russian supercomputers, it appears more patience is needed this
+time. Nonetheless, you are invited to:
 
-1. **Check our Code**, find and report bugs: We are undertaking a massive,
-   long-running computation. We put much effort in testing and eliminating
-   bugs so as to avoid wasting computational effort. Any bug must be found
-   as early as possible.
-2. **Contribute Hardware**: We are currently computing using
-   the idle time of the most powerful FPGA devices at the
-   [VLSI-EDA Chair](http://vlsi-eda.inf.tu-dresden.de/) of
-   [TU Dresden](http://www.tu-dresden.de/). While we,
-   indeed, have powerful devices available, their number is
-   rather small:
+1. check the implemented algorithm, and
+2. verify individual subtotals.
+
+The full [computation log is available](https://palios.inf.tu-dresden.de/q27status.php) for reference.
+
+## Hardware Used by the Q27 Project
 
    Count | Board | Family | Device | Solvers | Clock | SE
    ------|-------|--------|--------|---------|-------|-----
@@ -138,14 +133,6 @@ FPGA resources.
    Q27 design although computation picks up quite gently as problems arrive
    over the slow UART. This is why the maximum performance design is actually
    not in use.
-
-   We will happily port to other powerful platforms!
-
-   If you are willing to **contribute compute time** on your own hardware or
-   even to **donate devices**, please contact thomas.preusser@tu-dresden.de.
-
-In either case, you will have fully transparent access to all sources
-through this site and will receive a honorable mention on this page.
 
 ## Things To Do Alongside
 
