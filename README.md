@@ -4,7 +4,7 @@ This FPGA computation has raised the bar:
 
   **Q(27) = 234907967154122528**
 
-Nine years after the [computation of Q(26)](http://queens.inf.tu-dresden.de/), this project lets [FPGAs prevail again](#news).
+Seven years after the [computation of Q(26)](http://queens.inf.tu-dresden.de/), this project lets [FPGAs prevail again](#news).
 
 ***
 
