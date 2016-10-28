@@ -31,7 +31,7 @@ namespace queens {
 
  /**
   * Thin wrapper class for accessing a database entry. It enables a more
-  * comfortable access to the binary entry layout, wich comprises two
+  * comfortable access to the binary entry layout, which comprises two
   * 64-bit words stored in network byte order (big endian):
   *
   *
@@ -69,7 +69,7 @@ namespace queens {
   * zero in this case. Otherwise, a DBEntry just provides the interpretation
   * for the two adjacent underlying 64-bit words of a memory-mapped database.
   * The corresponding objects are not really constructed but rather obtained
-  * by reinterpreting the pointer to the backing memory, e.g. thorugh an
+  * by reinterpreting the pointer to the backing memory, e.g. through an
   * reinterprete_cast<DBEntry*>(ptr).
   */
   class DBEntry {

@@ -23,7 +23,7 @@ which are implemented in different languages:
 
 3. Java
   - The distributed backbone infrastructure comprising:
-     - a central *Server* handing out subproblem specification to
+     - a central *Server* handling out subproblem specification to
      - distributed *Client*s relaying them to their locally attached
        FPGA devices.
   - A standalone *LocalMain* to serve local FPGAs from a local database

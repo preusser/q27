@@ -5,7 +5,7 @@
 //
 //   A modification to the BLKRAM FIFO so that the input data/control, and
 // output data/control are registered before going to the BLKRAM.  This is
-// to make timing closure easier.  
+// to make timing closure easier.
 //
 //   This module should NOT be used in places where latency is important.
 //
@@ -87,7 +87,7 @@
 // Added optional clobbering of output data when not reading (simulation only).
 //
 // Revision 1.2  2012/11/26 16:54:21  neal
-// Fixed up some status output ports to make them more useable in some conditions.
+// Fixed up some status output ports to make them more usable in some conditions.
 //
 // Revision 1.1  2012/06/05 02:59:29  neal
 // Added a pipelined FIFO.
@@ -227,14 +227,14 @@ generate
   		.GEN_WRALMOSTFULL(GEN_WRALMOSTFULL)
 		) i_sel_fifo (
   		.reset(reset),
-		
+
   		.wr_clk(wr_clk),
   		.wr_en(INPUT_REG ? wr_en_d : wr_en),
   		.wr_din(wr_din_checksum), //.wr_din(INPUT_REG ? wr_din_d : wr_din),
   		.wr_full(wr_full_preclobber),
   		.wr_almostfull(wr_almostfull),
   		.wr_full_count(wr_full_count_selram),
-		
+
   		.rd_clk(rd_clk),
   		.rd_en(wr_en_blkram),
   		.rd_dout(wr_din_blkram),
@@ -343,7 +343,7 @@ always @(posedge rd_clk /*or posedge reset_rdclk*/) begin
 		ff_rd_empty <= 1'b1;
 		reg_rd_dout <= 'b0; // output FF from registered FIFO
 		ff_rd_dout <= 'b0; // secondary FF between FIFO and output FF
-	end else 
+	end else
 			*/
 	begin
 		if ((ff_rd_empty==1'b1) && (OUTPUT_REG==1)) begin
