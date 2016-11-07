@@ -125,8 +125,8 @@ The full [computation log is available](https://palios.inf.tu-dresden.de/q27stat
    1x    | KC705 | Xilinx Kintex-7      | XC7K325T-2      | 250 | 284.4 MHz | 711
    1x    | ML605 | Xilinx Virtex-6      | XC6VLX240T-1    | 127 | 171.4 MHz | 217
    2x    | DE4   | Altera Stratix IV GX | EP4SGX230KF40C2 | 125 | 250.0 MHz | 312
-   4x    | DNK7_F5_PCIe| Xilinx Kintex-7| 5x XC7K325T   | 5x240 | 220.0 MHz |2640
-
+   4x    | DNK7_F5_PCIe| Xilinx Kintex-7| 5x XC7K325T     | 5x240 | 220.0 MHz |2640
+   4x    | SDRC4 | Xilinx Virtex-4      | 4x XC4VLX160-10 | 4x 90 | 128.0 MHz | 460
    **SE** (Solver Equivalent) - The performance of one solver slice running at 100 MHz.
 
    It appears the power supply on the VC707 board is failing us on the cramped
