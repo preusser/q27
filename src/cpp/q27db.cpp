@@ -283,7 +283,7 @@ namespace {
       DBConstRange         range(dbx.roRange());
       DBEntry const *const beg = range.begin();
 
-      { // Parse range restictions
+      { // Parse range restrictions
 	RangeParser  parser;
 	for(int  i = 0; i < argc; i++) {
 	  try {

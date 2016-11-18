@@ -355,7 +355,7 @@ begin
   blkOutput : block
   begin
     -------------------------------------------------------------------------
-    -- Ouput Inverted Clock
+    -- Output Inverted Clock
     blkClock : block
       signal clk_inv : std_logic;
     begin
@@ -396,13 +396,13 @@ begin
       signal pgot : std_logic;
       signal pdat : std_logic_vector(8 downto 0);
       signal pvld : std_logic;
-      
+
       -- Outgoing Output Registers
       signal PreOutDat : std_logic_vector(8 downto 0) := (others => '0');
       signal PreOutPut : std_logic := '0';
 
     begin
-    
+
       -- Syncing go input
       process(clk_out)
       begin
@@ -414,7 +414,7 @@ begin
           end if;
         end if;
       end process;
-      
+
       -- Output FIFO (ic): Pre-Placements
       fifob : fifo_ic_got
         generic map (

@@ -84,7 +84,7 @@ architecture rtl of dnk7_queens0 is
   ----------------------------------------------------------------------------
   -- Communication Addresses
 
-  -- Word Adress: Read                          Write
+  -- Word Address: Read                          Write
   -----------------------------------------------------------------------------
   -- 0x0000       <byte capacity:32>            <-:30><enable:2> input  interrupt
   -- 0x0004       <bytes available:32>          <-:30><enable:2> output interrupt
@@ -136,7 +136,7 @@ architecture rtl of dnk7_queens0 is
       dcm_psclk    : in  std_logic;
       dcm_psen     : in  std_logic;
       dcm_psincdec : in  std_logic;
-      
+
       target_address       : out std_logic_vector(63 downto 0);
       target_write_data    : out std_logic_vector(63 downto 0);
       target_write_be      : out std_logic_vector(7 downto 0);
@@ -442,7 +442,7 @@ begin
       target_read_data       <= rdDat;
       target_read_data_tag   <= rdTag;
       target_read_data_ctrl  <= rdCtl;
-      
+
     end block blkRead;
 
     ---------------------------------------------------------------------------
@@ -633,7 +633,7 @@ begin
     begin
 
       -------------------------------------------------------------------------
-      -- Ouput Inverted Clock
+      -- Output Inverted Clock
       blkClock : block
         signal clk_inv : std_logic;
       begin
@@ -666,8 +666,8 @@ begin
       end block blkClock;
 
       -------------------------------------------------------------------------
-      -- Pre-placement Ouput
-      
+      -- Pre-placement Output
+
       -- Syncing stall input
       process(clk_slow)
       begin
@@ -680,7 +680,7 @@ begin
         end if;
       end process;
       pigot <= avld and not stall_s(0);
-      
+
       -- Output Registers
       process(clk_slow)
       begin
@@ -766,7 +766,7 @@ begin
         );
       rst_in <= '0';
     end block blkClock;
-    
+
     -- Bus Input Capture
     process(clk_in)
     begin
@@ -867,7 +867,7 @@ begin
         soeof => soeof,
         sogot => sogot
       );
-    
+
       enframe_i: entity work.enframe
         generic map (
           SENTINEL => SENTINEL
