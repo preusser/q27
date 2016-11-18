@@ -18,7 +18,7 @@ entity sdrc_queens_master is
     CLK_MUL  : positive := 31;		-- computation clock:
     CLK_DIV  : positive :=  4;		--    CLK_FREQ / CLK_DIV * CLK_MUL
 
-    -- UART Parametes
+    -- UART Parameters
     BAUDRATE : positive := 115200;
     SENTINEL : std_logic_vector(7 downto 0) := x"FA"  -- Start Byte
   );
@@ -327,7 +327,7 @@ begin
   begin
 
     -------------------------------------------------------------------------
-    -- Ouput Inverted Clock
+    -- Output Inverted Clock
     blkClock : block
       signal clk_inv : std_logic;
     begin
@@ -360,8 +360,8 @@ begin
     end block blkClock;
 
     -------------------------------------------------------------------------
-    -- Pre-placement Ouput
-    
+    -- Pre-placement Output
+
     -- Syncing stall input
     process(clk_out)
     begin
@@ -464,7 +464,7 @@ begin
         );
       rst_in <= '0';
     end block blkClock;
-    
+
     -- Bus Input Capture
     process(clk_in)
     begin

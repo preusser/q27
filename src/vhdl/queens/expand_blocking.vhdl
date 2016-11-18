@@ -51,7 +51,7 @@ architecture rtl of expand_blocking is
   constant M : positive := log2ceil(N);
 
   -- Decoded Placement
-  -- Frame Indeces: 0 - west, 1 - north, 2 - east, 3 - south
+  -- Frame Indices: 0 - west, 1 - north, 2 - east, 3 - south
   subtype tRow   is std_logic_vector(0 to N-1);
   type    tEdge  is array(0 to L-1) of tRow;
   type    tFrame is array(0 to   3) of tEdge;

@@ -13,7 +13,7 @@
 --		clock-domain 'Clock'. The clock-domain boundary crossing is done by two
 --		synchronizer D-FFs. All bits are independent from each other. If a known
 --		vendor like Altera or Xilinx are recognized, a vendor specific
---		implementation is choosen.
+--		implementation is chosen.
 --
 --		ATTENTION:
 --			Use this synchronizer only for long time stable signals (flags).

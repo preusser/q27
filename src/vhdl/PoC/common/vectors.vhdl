@@ -84,8 +84,8 @@ package vectors is
 	--		myMatrix'range(2) returns always myMatrix'range(1);	see work-around notes below
 	--
 	-- USAGE NOTES:
-	--	dimmension 1 => rows			- e.g. Words
-	--	dimmension 2 => columns		- e.g. Bits/Bytes in a word
+	--	dimension 1 => rows			- e.g. Words
+	--	dimension 2 => columns		- e.g. Bits/Bytes in a word
 	--
 	-- WORKAROUND: for Xilinx ISE/iSim
 	--	Version:	14.2
@@ -776,7 +776,7 @@ package body vectors is
 	function to_slm(slvv : T_SLVV_8) return T_SLM is
 --		variable test		: STD_LOGIC_VECTOR(T_SLV_8'range);
 --		variable slm		: T_SLM(slvv'range, test'range);				-- BUG: iSIM 14.5 cascaded 'range accesses let iSIM break down
---		variable slm		: T_SLM(slvv'range, T_SLV_8'range);			-- BUG: iSIM 14.5 allocates 9 bits in dimmension 2
+--		variable slm		: T_SLM(slvv'range, T_SLV_8'range);			-- BUG: iSIM 14.5 allocates 9 bits in dimension 2
 		variable slm		: T_SLM(slvv'range, 7 downto 0);					-- WORKAROUND: use constant range
 	begin
 --		report "slvv:    slvv.length=" & INTEGER'image(slvv'length) &			"  slm.dim0.length=" & INTEGER'image(slm'length(1)) & "  slm.dim1.length=" & INTEGER'image(slm'length(2)) severity NOTE;
