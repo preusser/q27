@@ -17,9 +17,9 @@ example of enumerating and counting all the valid solutions of the
 27-[Queens Puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle). 
 
 ## Further Reading
-* [**Full Computation Logs**](https://thomas.preusser.me/q27/index.php).
+* [**Full Computation Logs**](http://thomas.preusser.me/q27/index.php).
 * [Putting Queens in Carry Chains, No. 27](http://link.springer.com/article/10.1007/s11265-016-1176-8), Journal of Signal Processing Systems, Sep. 2016.
-* Pitch Presentation: [Putting Queens in Carry Chains &mdash; No. 27 &mdash;](pitch.pdf).
+* Pitch Presentation: [Putting Queens in Carry Chains &mdash; No. 27 &mdash;](https://raw.githubusercontent.com/preusser/q27/master/pitch.pdf).
 * Xcell Daily Blog: [Solving the N-Queens Puzzle for 27 Queens using FPGAs](https://forums.xilinx.com/t5/Xcell-Daily-Blog/Solving-the-N-Queens-Puzzle-for-27-Queens-using-FPGAs/ba-p/692248).
 
 Table of Contents
